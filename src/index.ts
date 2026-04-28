@@ -11,6 +11,7 @@
 // is better for memory in most engines (I *think*).
 
 import wk from './node-worker';
+import { bzip2Decode } from './bzip2';
 
 // aliases for shorter compressed code (most minifers don't do this)
 const u8 = Uint8Array, u16 = Uint16Array, i32 = Int32Array;
@@ -2496,6 +2497,9 @@ export function registerUnzipDecoder(compression: number, decoder: UnzipSyncDeco
 export function unregisterUnzipDecoder(compression: number) {
   delete ucd[compression];
 }
+
+// Built-in ZIP method 12 (BZIP2) decoder
+registerUnzipDecoder(12, (data) => bzip2Decode(data));
 
 /**
  * A file that can be used to create a ZIP archive
