@@ -3763,6 +3763,32 @@ export function unzip(data: Uint8Array, opts: AsyncUnzipOptions | UnzipCallback,
             }
           }
           else term.push(inflate(infl, { size: su }, cbl));
+        } else if (c == 12 && !(dcmp && dcmp[c])) {
+          const bzd = ucd[12];
+          // Keep tiny BZIP2 entries sync; defer larger ones to avoid blocking the current tick.
+          if (!bzd) cbl(err(14, 'unknown compression type ' + c, 1), null);
+          else if (su < 262144) {
+            try {
+              cbl(null, bzd(data.subarray(b, b + sc), file));
+            } catch (e) {
+              cbl(e, null);
+            }
+          } else {
+            let done = false;
+            const t = setTimeout(() => {
+              if (done) return;
+              try {
+                done = true;
+                cbl(null, bzd(data.subarray(b, b + sc), file));
+              } catch (e) {
+                cbl(e, null);
+              }
+            }, 0);
+            term.push(() => {
+              done = true;
+              clearTimeout(t);
+            });
+          }
         } else if ((dcmp && dcmp[c]) || ucd[c]) {
           try {
             cbl(null, (dcmp && dcmp[c] || ucd[c])(data.subarray(b, b + sc), file));
