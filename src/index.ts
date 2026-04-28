@@ -2462,6 +2462,11 @@ export interface UnzipOptions {
 }
 
 /**
+ * A synchronous decoder function for ZIP entries using a specific method ID.
+ */
+export type UnzipSyncDecoder = (data: Uint8Array, info: UnzipFileInfo) => Uint8Array;
+
+/**
  * Options for asynchronously creating a ZIP archive
  */
 export interface AsyncZipOptions extends AsyncDeflateOptions, ZipAttributes {}
@@ -2470,6 +2475,27 @@ export interface AsyncZipOptions extends AsyncDeflateOptions, ZipAttributes {}
  * Options for asynchronously expanding a ZIP archive
  */
 export interface AsyncUnzipOptions extends UnzipOptions {}
+
+const ucd: Record<number, UnzipSyncDecoder> = {};
+
+/**
+ * Registers a global synchronous decoder used by both `unzipSync` and `unzip`.
+ * Useful for adding support for additional ZIP method IDs.
+ * @param compression The ZIP compression method ID
+ * @param decoder The decoder implementation
+ */
+export function registerUnzipDecoder(compression: number, decoder: UnzipSyncDecoder) {
+  ucd[compression] = decoder;
+}
+
+/**
+ * Unregisters a global synchronous decoder previously registered via
+ * `registerUnzipDecoder`.
+ * @param compression The ZIP compression method ID
+ */
+export function unregisterUnzipDecoder(compression: number) {
+  delete ucd[compression];
+}
 
 /**
  * A file that can be used to create a ZIP archive
@@ -3733,9 +3759,9 @@ export function unzip(data: Uint8Array, opts: AsyncUnzipOptions | UnzipCallback,
             }
           }
           else term.push(inflate(infl, { size: su }, cbl));
-        } else if (dcmp && dcmp[c]) {
+        } else if ((dcmp && dcmp[c]) || ucd[c]) {
           try {
-            cbl(null, dcmp[c](data.subarray(b, b + sc), file));
+            cbl(null, (dcmp && dcmp[c] || ucd[c])(data.subarray(b, b + sc), file));
           } catch(e) {
             cbl(e, null);
           }
@@ -3785,7 +3811,7 @@ export function unzipSync(data: Uint8Array, opts?: UnzipOptions) {
     if (!fltr || fltr(file)) {
       if (!c) files[fn] = slc(data, b, b + sc);
       else if (c == 8) files[fn] = inflateSync(data.subarray(b, b + sc), { out: new u8(su) });
-      else if (dcmp && dcmp[c]) files[fn] = dcmp[c](data.subarray(b, b + sc), file);
+      else if ((dcmp && dcmp[c]) || ucd[c]) files[fn] = (dcmp && dcmp[c] || ucd[c])(data.subarray(b, b + sc), file);
       else err(14, 'unknown compression type ' + c);
     }
   }

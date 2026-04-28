@@ -1,6 +1,9 @@
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
-import { strToU8, strFromU8, zipSync, unzipSync, unzip, inflateSync } from '../src/index';
+import {
+  strToU8, strFromU8, zipSync, unzipSync, unzip, inflateSync,
+  registerUnzipDecoder, unregisterUnzipDecoder
+} from '../src/index';
 
 const b2 = (d: Uint8Array, b: number) => d[b] | (d[b + 1] << 8);
 const b4 = (d: Uint8Array, b: number) => (d[b] | (d[b + 1] << 8) | (d[b + 2] << 16) | (d[b + 3] << 24)) >>> 0;
@@ -50,6 +53,31 @@ test('unzip custom decoder can handle non-default ZIP method', async () => {
       else resolve(files);
     });
   });
+  assert.is(strFromU8(out['a.txt']), text);
+});
+
+test('global decoder registration works for unzipSync', () => {
+  const text = 'hello global sync decoder';
+  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
+  const method12 = rewriteZipMethod(normal, 8, 12);
+  registerUnzipDecoder(12, (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) }));
+  const out = unzipSync(method12);
+  unregisterUnzipDecoder(12);
+  assert.is(strFromU8(out['a.txt']), text);
+});
+
+test('global decoder registration works for unzip', async () => {
+  const text = 'hello global async decoder';
+  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
+  const method12 = rewriteZipMethod(normal, 8, 12);
+  registerUnzipDecoder(12, (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) }));
+  const out = await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
+    unzip(method12, (e, files) => {
+      if (e) reject(e);
+      else resolve(files);
+    });
+  });
+  unregisterUnzipDecoder(12);
   assert.is(strFromU8(out['a.txt']), text);
 });
 
