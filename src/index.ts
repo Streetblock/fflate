@@ -2454,6 +2454,11 @@ export interface UnzipOptions {
    * A filter function to extract only certain files from a ZIP archive
    */
   filter?: UnzipFileFilter;
+  /**
+   * Custom decoders keyed by ZIP compression method ID.
+   * Use this to add support for additional methods (e.g. 12 = BZIP2).
+   */
+  decompress?: Record<number, (data: Uint8Array, info: UnzipFileInfo) => Uint8Array>;
 }
 
 /**
@@ -3386,8 +3391,7 @@ export interface UnzipFileInfo {
   /**
    * The compression format for the data stream. This number is determined by
    * the spec in PKZIP's APPNOTE.txt, section 4.4.5. For example, 0 = no
-   * compression, 8 = deflate, 14 = LZMA. If the filter function returns true
-   * but this value is not 8, the unzip function will throw.
+   * compression, 8 = deflate, 14 = LZMA.
    */
   compression: number;
 }
@@ -3697,6 +3701,7 @@ export function unzip(data: Uint8Array, opts: AsyncUnzipOptions | UnzipCallback,
       }
     }
     const fltr = opts && (opts as AsyncUnzipOptions).filter;
+    const dcmp = opts && (opts as AsyncUnzipOptions).decompress;
     for (let i = 0; i < c; ++i) {
       const [c, sc, su, fn, no, off] = zh(data, o, z), b = slzh(data, off);
       o = no
@@ -3709,12 +3714,13 @@ export function unzip(data: Uint8Array, opts: AsyncUnzipOptions | UnzipCallback,
           if (!--lft) cbd(null, files);
         }
       }
-      if (!fltr || fltr({
+      const file = {
         name: fn,
         size: sc,
         originalSize: su,
         compression: c
-      })) {
+      };
+      if (!fltr || fltr(file)) {
         if (!c) cbl(null, slc(data, b, b + sc))
         else if (c == 8) {
           const infl = data.subarray(b, b + sc);
@@ -3727,6 +3733,12 @@ export function unzip(data: Uint8Array, opts: AsyncUnzipOptions | UnzipCallback,
             }
           }
           else term.push(inflate(infl, { size: su }, cbl));
+        } else if (dcmp && dcmp[c]) {
+          try {
+            cbl(null, dcmp[c](data.subarray(b, b + sc), file));
+          } catch(e) {
+            cbl(e, null);
+          }
         } else cbl(err(14, 'unknown compression type ' + c, 1), null);
       } else cbl(null, null);
     }
@@ -3760,17 +3772,20 @@ export function unzipSync(data: Uint8Array, opts?: UnzipOptions) {
     }
   }
   const fltr = opts && opts.filter;
+  const dcmp = opts && opts.decompress;
   for (let i = 0; i < c; ++i) {
     const [c, sc, su, fn, no, off] = zh(data, o, z), b = slzh(data, off);
     o = no;
-    if (!fltr || fltr({
+    const file = {
       name: fn,
       size: sc,
       originalSize: su,
       compression: c
-    })) {
+    };
+    if (!fltr || fltr(file)) {
       if (!c) files[fn] = slc(data, b, b + sc);
       else if (c == 8) files[fn] = inflateSync(data.subarray(b, b + sc), { out: new u8(su) });
+      else if (dcmp && dcmp[c]) files[fn] = dcmp[c](data.subarray(b, b + sc), file);
       else err(14, 'unknown compression type ' + c);
     }
   }
