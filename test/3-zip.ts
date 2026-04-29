@@ -139,4 +139,26 @@ test('built-in BZIP2 decoder uses async path for large original size metadata', 
   assert.is(strFromU8(out['a.txt']), 'This is a test\n');
 });
 
+test('local decoder alias resolves method 20 via method 93', () => {
+  const text = 'zstd alias local';
+  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
+  const method20 = rewriteZipMethod(normal, 8, 20);
+  const out = unzipSync(method20, {
+    decompress: {
+      93: (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) })
+    }
+  });
+  assert.is(strFromU8(out['a.txt']), text);
+});
+
+test('global decoder alias resolves method 20 via method 93', () => {
+  const text = 'zstd alias global';
+  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
+  const method20 = rewriteZipMethod(normal, 8, 20);
+  registerUnzipDecoder(93, (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) }));
+  const out = unzipSync(method20);
+  unregisterUnzipDecoder(93);
+  assert.is(strFromU8(out['a.txt']), text);
+});
+
 test.run();

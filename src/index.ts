@@ -2480,6 +2480,16 @@ export interface AsyncZipOptions extends AsyncDeflateOptions, ZipAttributes {}
 export interface AsyncUnzipOptions extends UnzipOptions {}
 
 const ucd: Record<number, UnzipSyncDecoder> = {};
+const uma: Record<number, number> = {
+  // ZIP method alias: legacy ZSTD method ID
+  20: 93
+};
+
+const udc = (compression: number, local?: Record<number, UnzipSyncDecoder>) => (
+  (local && (local[compression] || local[uma[compression]]))
+  || ucd[compression]
+  || ucd[uma[compression]]
+);
 
 /**
  * Registers a global synchronous decoder used by both `unzipSync` and `unzip`.
@@ -3779,9 +3789,9 @@ export function unzip(data: Uint8Array, opts: AsyncUnzipOptions | UnzipCallback,
               bze
             ], ev => pbf(bzip2Decode(ev.data[0])), 6, cbl));
           }
-        } else if ((dcmp && dcmp[c]) || ucd[c]) {
+        } else if (udc(c, dcmp)) {
           try {
-            cbl(null, (dcmp && dcmp[c] || ucd[c])(data.subarray(b, b + sc), file));
+            cbl(null, udc(c, dcmp)(data.subarray(b, b + sc), file));
           } catch(e) {
             cbl(e, null);
           }
@@ -3831,7 +3841,7 @@ export function unzipSync(data: Uint8Array, opts?: UnzipOptions) {
     if (!fltr || fltr(file)) {
       if (!c) files[fn] = slc(data, b, b + sc);
       else if (c == 8) files[fn] = inflateSync(data.subarray(b, b + sc), { out: new u8(su) });
-      else if ((dcmp && dcmp[c]) || ucd[c]) files[fn] = (dcmp && dcmp[c] || ucd[c])(data.subarray(b, b + sc), file);
+      else if (udc(c, dcmp)) files[fn] = udc(c, dcmp)(data.subarray(b, b + sc), file);
       else err(14, 'unknown compression type ' + c);
     }
   }
