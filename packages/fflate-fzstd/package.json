@@ -1,5 +1,5 @@
 {
-  "name": "fflate-zstd-fzstd",
+  "name": "fflate-fzstd",
   "version": "0.0.1",
   "description": "Optional ZSTD (ZIP methods 93/20) adapter for fflate using fzstd",
   "main": "./index.js",
@@ -11,4 +11,3 @@
     "fzstd": "^0.1.1"
   }
 }
-

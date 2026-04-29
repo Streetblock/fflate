@@ -514,7 +514,7 @@ const files = unzipSync(zipDataWithZstdEntries);
 
 This enables ZIP method `93` (ZSTD) and legacy method `20` through the same decoder.
 See [examples/zstd-optional.ts](./examples/zstd-optional.ts) for a dynamic-import setup.
-There is also a dedicated adapter package scaffold in [packages/fflate-zstd-fzstd](./packages/fflate-zstd-fzstd).
+There is also a dedicated adapter package scaffold in [packages/fflate-fzstd](./packages/fflate-fzstd).
 
 ## Bundle size estimates
 
