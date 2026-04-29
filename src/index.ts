@@ -2549,9 +2549,6 @@ export function registerZstdDecoderFromFzstd(fzstd: FzstdLike) {
   registerZstdDecoder((data) => fzstd.decompress(data));
 }
 
-// Built-in ZIP method 12 (BZIP2) decoder
-registerUnzipDecoder(12, (data) => bzip2Decode(data));
-
 /**
  * A file that can be used to create a ZIP archive
  */
@@ -3814,20 +3811,6 @@ export function unzip(data: Uint8Array, opts: AsyncUnzipOptions | UnzipCallback,
             }
           }
           else term.push(inflate(infl, { size: su }, cbl));
-        } else if (c == 12 && !(dcmp && dcmp[c])) {
-          const infl = data.subarray(b, b + sc);
-          // Keep tiny BZIP2 entries sync; offload larger ones to a worker.
-          if (su < 262144) {
-            try {
-              cbl(null, bzip2Decode(infl));
-            } catch (e) {
-              cbl(e, null);
-            }
-          } else {
-            term.push(cbify(infl, {}, [
-              bze
-            ], ev => pbf(bzip2Decode(ev.data[0])), 6, cbl));
-          }
         } else if (udc(c, dcmp)) {
           try {
             cbl(null, udc(c, dcmp)(data.subarray(b, b + sc), file));
