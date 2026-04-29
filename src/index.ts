@@ -2477,6 +2477,16 @@ export interface AsyncZipOptions extends AsyncDeflateOptions, ZipAttributes {}
 export interface AsyncUnzipOptions extends UnzipOptions {}
 
 const ucd: Record<number, UnzipSyncDecoder> = {};
+const uma: Record<number, number> = {
+  // ZIP method alias: legacy ZSTD method ID
+  20: 93
+};
+
+const udc = (compression: number, local?: Record<number, UnzipSyncDecoder>) => (
+  (local && (local[compression] || local[uma[compression]]))
+  || ucd[compression]
+  || ucd[uma[compression]]
+);
 
 /**
  * Registers a global synchronous decoder used by both `unzipSync` and `unzip`.
@@ -3759,9 +3769,23 @@ export function unzip(data: Uint8Array, opts: AsyncUnzipOptions | UnzipCallback,
             }
           }
           else term.push(inflate(infl, { size: su }, cbl));
-        } else if ((dcmp && dcmp[c]) || ucd[c]) {
+        } else if (c == 12 && !(dcmp && dcmp[c])) {
+          const infl = data.subarray(b, b + sc);
+          // Keep tiny BZIP2 entries sync; offload larger ones to a worker.
+          if (su < 262144) {
+            try {
+              cbl(null, bzip2Decode(infl));
+            } catch (e) {
+              cbl(e, null);
+            }
+          } else {
+            term.push(cbify(infl, {}, [
+              bze
+            ], ev => pbf(bzip2Decode(ev.data[0])), 6, cbl));
+          }
+        } else if (udc(c, dcmp)) {
           try {
-            cbl(null, (dcmp && dcmp[c] || ucd[c])(data.subarray(b, b + sc), file));
+            cbl(null, udc(c, dcmp)(data.subarray(b, b + sc), file));
           } catch(e) {
             cbl(e, null);
           }
@@ -3811,7 +3835,7 @@ export function unzipSync(data: Uint8Array, opts?: UnzipOptions) {
     if (!fltr || fltr(file)) {
       if (!c) files[fn] = slc(data, b, b + sc);
       else if (c == 8) files[fn] = inflateSync(data.subarray(b, b + sc), { out: new u8(su) });
-      else if ((dcmp && dcmp[c]) || ucd[c]) files[fn] = (dcmp && dcmp[c] || ucd[c])(data.subarray(b, b + sc), file);
+      else if (udc(c, dcmp)) files[fn] = udc(c, dcmp)(data.subarray(b, b + sc), file);
       else err(14, 'unknown compression type ' + c);
     }
   }

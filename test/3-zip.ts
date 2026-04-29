@@ -81,4 +81,54 @@ test('global decoder registration works for unzip', async () => {
   assert.is(strFromU8(out['a.txt']), text);
 });
 
+test('built-in BZIP2 decoder works for unzipSync (method 12)', () => {
+  const z = zipStoredAsMethod('a.txt', BZ2_SAMPLE, 12);
+  const out = unzipSync(z);
+  assert.is(strFromU8(out['a.txt']), 'This is a test\n');
+});
+
+test('built-in BZIP2 decoder works for unzip (method 12)', async () => {
+  const z = zipStoredAsMethod('a.txt', BZ2_SAMPLE, 12);
+  const out = await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
+    unzip(z, (e, files) => {
+      if (e) reject(e);
+      else resolve(files);
+    });
+  });
+  assert.is(strFromU8(out['a.txt']), 'This is a test\n');
+});
+
+test('built-in BZIP2 decoder uses async path for large original size metadata', async () => {
+  const z = rewriteZipOriginalSize(zipStoredAsMethod('a.txt', BZ2_SAMPLE, 12), 300000);
+  const out = await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
+    unzip(z, (e, files) => {
+      if (e) reject(e);
+      else resolve(files);
+    });
+  });
+  assert.is(strFromU8(out['a.txt']), 'This is a test\n');
+});
+
+test('local decoder alias resolves method 20 via method 93', () => {
+  const text = 'zstd alias local';
+  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
+  const method20 = rewriteZipMethod(normal, 8, 20);
+  const out = unzipSync(method20, {
+    decompress: {
+      93: (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) })
+    }
+  });
+  assert.is(strFromU8(out['a.txt']), text);
+});
+
+test('global decoder alias resolves method 20 via method 93', () => {
+  const text = 'zstd alias global';
+  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
+  const method20 = rewriteZipMethod(normal, 8, 20);
+  registerUnzipDecoder(93, (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) }));
+  const out = unzipSync(method20);
+  unregisterUnzipDecoder(93);
+  assert.is(strFromU8(out['a.txt']), text);
+});
+
 test.run();
