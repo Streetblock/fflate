@@ -513,6 +513,7 @@ const files = unzipSync(zipDataWithZstdEntries);
 ```
 
 This enables ZIP method `93` (ZSTD) and legacy method `20` through the same decoder.
+See [examples/zstd-optional.ts](./examples/zstd-optional.ts) for a dynamic-import setup.
 
 ## Bundle size estimates
 
