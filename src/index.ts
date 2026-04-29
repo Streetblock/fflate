@@ -2467,6 +2467,15 @@ export interface UnzipOptions {
 export type UnzipSyncDecoder = (data: Uint8Array, info: UnzipFileInfo) => Uint8Array;
 
 /**
+ * ZIP method ID for Zstandard (current).
+ */
+export const ZIP_METHOD_ZSTD = 93;
+/**
+ * ZIP method ID for Zstandard (deprecated legacy ID).
+ */
+export const ZIP_METHOD_ZSTD_DEPRECATED = 20;
+
+/**
  * Options for asynchronously creating a ZIP archive
  */
 export interface AsyncZipOptions extends AsyncDeflateOptions, ZipAttributes {}
@@ -2479,7 +2488,7 @@ export interface AsyncUnzipOptions extends UnzipOptions {}
 const ucd: Record<number, UnzipSyncDecoder> = {};
 const uma: Record<number, number> = {
   // ZIP method alias: legacy ZSTD method ID
-  20: 93
+  [ZIP_METHOD_ZSTD_DEPRECATED]: ZIP_METHOD_ZSTD
 };
 
 const udc = (compression: number, local?: Record<number, UnzipSyncDecoder>) => (
@@ -2506,6 +2515,26 @@ export function registerUnzipDecoder(compression: number, decoder: UnzipSyncDeco
 export function unregisterUnzipDecoder(compression: number) {
   delete ucd[compression];
 }
+
+/**
+ * Registers a decoder for Zstandard ZIP methods (both 93 and legacy 20).
+ * @param decoder The decoder implementation
+ */
+export function registerZstdDecoder(decoder: UnzipSyncDecoder) {
+  registerUnzipDecoder(ZIP_METHOD_ZSTD, decoder);
+  registerUnzipDecoder(ZIP_METHOD_ZSTD_DEPRECATED, decoder);
+}
+
+/**
+ * Unregisters decoders for Zstandard ZIP methods (93 and legacy 20).
+ */
+export function unregisterZstdDecoder() {
+  unregisterUnzipDecoder(ZIP_METHOD_ZSTD);
+  unregisterUnzipDecoder(ZIP_METHOD_ZSTD_DEPRECATED);
+}
+
+// Built-in ZIP method 12 (BZIP2) decoder
+registerUnzipDecoder(12, (data) => bzip2Decode(data));
 
 /**
  * A file that can be used to create a ZIP archive

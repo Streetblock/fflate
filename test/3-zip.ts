@@ -2,7 +2,8 @@ import { test } from 'uvu';
 import * as assert from 'uvu/assert';
 import {
   strToU8, strFromU8, zipSync, unzipSync, unzip, inflateSync,
-  registerUnzipDecoder, unregisterUnzipDecoder
+  registerUnzipDecoder, unregisterUnzipDecoder,
+  registerZstdDecoder, unregisterZstdDecoder
 } from '../src/index';
 
 const b2 = (d: Uint8Array, b: number) => d[b] | (d[b + 1] << 8);
@@ -128,6 +129,26 @@ test('global decoder alias resolves method 20 via method 93', () => {
   registerUnzipDecoder(93, (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) }));
   const out = unzipSync(method20);
   unregisterUnzipDecoder(93);
+  assert.is(strFromU8(out['a.txt']), text);
+});
+
+test('registerZstdDecoder handles method 93', () => {
+  const text = 'zstd helper 93';
+  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
+  const method93 = rewriteZipMethod(normal, 8, 93);
+  registerZstdDecoder((data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) }));
+  const out = unzipSync(method93);
+  unregisterZstdDecoder();
+  assert.is(strFromU8(out['a.txt']), text);
+});
+
+test('registerZstdDecoder handles method 20', () => {
+  const text = 'zstd helper 20';
+  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
+  const method20 = rewriteZipMethod(normal, 8, 20);
+  registerZstdDecoder((data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) }));
+  const out = unzipSync(method20);
+  unregisterZstdDecoder();
   assert.is(strFromU8(out['a.txt']), text);
 });
 
