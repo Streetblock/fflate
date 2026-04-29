@@ -500,6 +500,20 @@ unzip.push(data, true);
 
 See the [documentation](https://github.com/101arrowz/fflate/blob/master/docs/README.md) for more detailed information about the API.
 
+### Optional ZSTD ZIP support (methods 93 and 20)
+
+`fflate` keeps Zstandard optional in core. You can provide a decoder at runtime:
+
+```ts
+import { registerZstdDecoderFromFzstd, unzipSync } from 'fflate';
+import * as fzstd from 'fzstd';
+
+registerZstdDecoderFromFzstd(fzstd);
+const files = unzipSync(zipDataWithZstdEntries);
+```
+
+This enables ZIP method `93` (ZSTD) and legacy method `20` through the same decoder.
+
 ## Bundle size estimates
 
 The bundle size measurements for `fflate` on sites like Bundlephobia include every feature of the library and should be seen as an upper bound. As long as you are using tree shaking or dead code elimination, this table should give you a general idea of `fflate`'s bundle size for the features you need.

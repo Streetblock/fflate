@@ -2536,6 +2536,22 @@ export function unregisterZstdDecoder() {
   unregisterUnzipDecoder(ZIP_METHOD_ZSTD_DEPRECATED);
 }
 
+/**
+ * Minimal shape for an fzstd-like module.
+ */
+export interface FzstdLike {
+  decompress(data: Uint8Array): Uint8Array;
+}
+
+/**
+ * Registers ZSTD ZIP decoders (93/20) using an fzstd-like implementation.
+ * This keeps ZSTD optional and avoids a hard dependency from fflate core.
+ * @param fzstd A module/object exposing `decompress(Uint8Array): Uint8Array`
+ */
+export function registerZstdDecoderFromFzstd(fzstd: FzstdLike) {
+  registerZstdDecoder((data) => fzstd.decompress(data));
+}
+
 // Built-in ZIP method 12 (BZIP2) decoder
 registerUnzipDecoder(12, (data) => bzip2Decode(data));
 
