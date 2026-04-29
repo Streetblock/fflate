@@ -3,7 +3,7 @@ import * as assert from 'uvu/assert';
 import {
   strToU8, strFromU8, zipSync, unzipSync, unzip, inflateSync,
   registerUnzipDecoder, unregisterUnzipDecoder,
-  registerZstdDecoder, unregisterZstdDecoder
+  registerZstdDecoder, unregisterZstdDecoder, registerZstdDecoderFromFzstd
 } from '../src/index';
 
 const b2 = (d: Uint8Array, b: number) => d[b] | (d[b + 1] << 8);
@@ -150,6 +150,21 @@ test('registerZstdDecoder handles method 20', () => {
   const out = unzipSync(method20);
   unregisterZstdDecoder();
   assert.is(strFromU8(out['a.txt']), text);
+});
+
+test('registerZstdDecoderFromFzstd wires method 93 and 20', () => {
+  const t93 = 'zstd fzstd helper 93';
+  const t20 = 'zstd fzstd helper 20';
+  const z93 = rewriteZipMethod(zipSync({ 'a.txt': strToU8(t93) }, { level: 6 }), 8, 93);
+  const z20 = rewriteZipMethod(zipSync({ 'b.txt': strToU8(t20) }, { level: 6 }), 8, 20);
+  registerZstdDecoderFromFzstd({
+    decompress: (data) => inflateSync(data)
+  });
+  const o93 = unzipSync(z93);
+  const o20 = unzipSync(z20);
+  unregisterZstdDecoder();
+  assert.is(strFromU8(o93['a.txt']), t93);
+  assert.is(strFromU8(o20['b.txt']), t20);
 });
 
 test.run();
