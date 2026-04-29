@@ -1,0 +1,14 @@
+{
+  "name": "fflate-zstd-fzstd",
+  "version": "0.0.1",
+  "description": "Optional ZSTD (ZIP methods 93/20) adapter for fflate using fzstd",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "sideEffects": false,
+  "license": "MIT",
+  "peerDependencies": {
+    "fflate": "*",
+    "fzstd": "^0.1.1"
+  }
+}
+

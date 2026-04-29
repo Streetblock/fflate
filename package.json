@@ -108,6 +108,7 @@
     "preact": "^10.17.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "fzstd": "^0.1.1",
     "simple-git": "^3.19.1",
     "terser": "^5.3.8",
     "tiny-inflate": "*",
