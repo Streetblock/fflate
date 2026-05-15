@@ -875,7 +875,7 @@ export interface DeflateOptions {
   /**
    * The memory level to use, ranging from 0-12. Increasing this increases speed and compression ratio at the cost of memory.
    * 
-   * Note that this is exponential: while level 0 uses 4 kB, level 4 uses 64 kB, level 8 uses 1 MB, and level 12 uses 16 MB.
+   * Note that this is exponential: while level 0 uses 8 kB, level 4 uses 128 kB, level 8 uses 2 MB, and level 12 uses 32 MB.
    * It is recommended not to lower the value below 4, since that tends to hurt performance.
    * In addition, values above 8 tend to help very little on most data and can even hurt performance.
    * 
@@ -1322,6 +1322,11 @@ export class Deflate {
     if (this.s.z > this.s.w + 8191 || final) {
       this.p(this.b, final || false);
       this.s.w = this.s.i, this.s.i -= 2;
+    }
+    if (final) {
+      // cleanup unneeded buffers/state to reduce memory usage
+      this.s = this.o = {} as DeflateState & DeflateOptions;
+      this.b = et;
     }
   }
 
