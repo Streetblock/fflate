@@ -82,10 +82,16 @@ push() will silently fail.
 
 ### flush
 
-▸ **flush**(): `void`
+▸ **flush**(`sync?`): `void`
 
 Flushes buffered uncompressed data. Useful to immediately retrieve the
 GZIPped output for small inputs.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `sync?` | `boolean` | Whether to flush to a byte boundary. A sync flush takes 4-5 extra bytes, but guarantees all pushed data is immediately decompressible. |
 
 #### Returns
 

@@ -1132,15 +1132,15 @@ type CmpDecmpStrm = Inflate | Deflate | Gzip | Gunzip | Zlib | Unzlib;
 // auto stream
 const astrm = (strm: CmpDecmpStrm) => {
   strm.ondata = (dat, final) => (postMessage as Worker['postMessage'])([dat, final], [dat.buffer]);
-  return (ev: MessageEvent<[Uint8Array, boolean] | []>) => {
-    if (ev.data.length) {
+  return (ev: MessageEvent<[Uint8Array, boolean] | [0, boolean | undefined]>) => {
+    if (ev.data[0]) {
       strm.push(ev.data[0], ev.data[1]);
       (postMessage as Worker['postMessage'])([ev.data[0].length]);
-    } else (strm as Deflate | Gzip | Zlib).flush()
+    } else (strm as Deflate | Gzip | Zlib).flush(ev.data[1])
   }
 }
 
-type Astrm = { ondata: AsyncFlateStreamHandler; push: (d: Uint8Array, f?: boolean) => void; terminate: AsyncTerminable; flush?: () => void; ondrain?: AsyncFlateDrainHandler; queuedSize: number; };
+type Astrm = { ondata: AsyncFlateStreamHandler; push: (d: Uint8Array, f?: boolean) => void; terminate: AsyncTerminable; flush?: (sync?: boolean) => void; ondrain?: AsyncFlateDrainHandler; queuedSize: number; };
 
 // async stream attach
 const astrmify = <T>(fns: (() => unknown[])[], strm: Astrm, opts: T | 0, init: (ev: MessageEvent<T>) => void, id: number, flush: 0 | 1, ext?: (msg: unknown) => unknown) => {
@@ -1171,7 +1171,7 @@ const astrmify = <T>(fns: (() => unknown[])[], strm: Astrm, opts: T | 0, init: (
   };
   strm.terminate = () => { w.terminate(); };
   if (flush) {
-    strm.flush = () => { w.postMessage([]); };
+    strm.flush = sync => { w.postMessage([0, sync]); };
   }
 }
 
@@ -1328,12 +1328,26 @@ export class Deflate {
   /**
    * Flushes buffered uncompressed data. Useful to immediately retrieve the
    * deflated output for small inputs.
+   * @param sync Whether to flush to a byte boundary. A sync flush takes 4-5
+   *             extra bytes, but guarantees all pushed data is immediately
+   *             decompressible. A separate DEFLATE stream may be concatenated
+   *             with the current output after a sync flush.
    */
-  flush() {
+  flush(sync?: boolean) {
     if (!this.ondata) err(5);
     if (this.s.l) err(4);
     this.p(this.b, false);
     this.s.w = this.s.i, this.s.i -= 2;
+    // could technically skip writing the type-0 block for (this.s.r & 7) == 0,
+    // but the deterministic trailer (00 00 FF FF) is useful in some situations
+    if (sync) {
+      const c = new u8(6);
+      c[0] = this.s.r >> 3;
+      // write empty, non-final type-0 block
+      const ep = wfblk(c, this.s.r, et);
+      this.s.r = 0;
+      this.ondata(c.subarray(0, ep >> 3), false);
+    }
   }
 }
 
@@ -1388,9 +1402,13 @@ export class AsyncDeflate {
   /**
    * Flushes buffered uncompressed data. Useful to immediately retrieve the
    * deflated output for small inputs.
+   * @param sync Whether to flush to a byte boundary. A sync flush takes 4-5
+   *             extra bytes, but guarantees all pushed data is immediately
+   *             decompressible. A separate DEFLATE stream may be concatenated
+   *             with the current output after a sync flush.
    */
   // @ts-ignore
-  flush(): void;
+  flush(sync?: boolean): void;
   
   /**
    * A method to terminate the stream's internal worker. Subsequent calls to
@@ -1635,9 +1653,12 @@ export class Gzip {
   /**
    * Flushes buffered uncompressed data. Useful to immediately retrieve the
    * GZIPped output for small inputs.
+   * @param sync Whether to flush to a byte boundary. A sync flush takes 4-5
+   *             extra bytes, but guarantees all pushed data is immediately
+   *             decompressible.
    */
-  flush() {
-    Deflate.prototype.flush.call(this);
+  flush(sync?: boolean) {
+    Deflate.prototype.flush.call(this, sync);
   }
 }
 
@@ -1693,9 +1714,12 @@ export class AsyncGzip {
   /**
    * Flushes buffered uncompressed data. Useful to immediately retrieve the
    * GZIPped output for small inputs.
+   * @param sync Whether to flush to a byte boundary. A sync flush takes 4-5
+   *             extra bytes, but guarantees all pushed data is immediately
+   *             decompressible.
    */
   // @ts-ignore
-  flush(): void;
+  flush(sync?: boolean): void;
 
   /**
    * A method to terminate the stream's internal worker. Subsequent calls to
@@ -1962,9 +1986,12 @@ export class Zlib {
   /**
    * Flushes buffered uncompressed data. Useful to immediately retrieve the
    * zlibbed output for small inputs.
+   * @param sync Whether to flush to a byte boundary. A sync flush takes 4-5
+   *             extra bytes, but guarantees all pushed data is immediately
+   *             decompressible.
    */
-  flush() {
-    Deflate.prototype.flush.call(this);
+  flush(sync?: boolean) {
+    Deflate.prototype.flush.call(this, sync);
   }
 }
 
@@ -2020,9 +2047,12 @@ export class AsyncZlib {
   /**
    * Flushes buffered uncompressed data. Useful to immediately retrieve the
    * zlibbed output for small inputs.
+   * @param sync Whether to flush to a byte boundary. A sync flush takes 4-5
+   *             extra bytes, but guarantees all pushed data is immediately
+   *             decompressible.
    */
   // @ts-ignore
-  flush(): void;
+  flush(sync?: boolean): void;
 
   /**
    * A method to terminate the stream's internal worker. Subsequent calls to
