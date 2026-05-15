@@ -50,7 +50,8 @@
         "types": "./lib/browser.d.cts",
         "default": "./lib/browser.cjs"
       }
-    }
+    },
+    "./package.json": "./package.json"
   },
   "targets": {
     "main": false,
