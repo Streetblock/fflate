@@ -1,3 +1,7 @@
+[**fflate**](../README.md)
+
+***
+
 # Class: ZipDeflate
 
 Streaming DEFLATE compression for ZIP archives. Prefer using AsyncZipDeflate
@@ -7,51 +11,37 @@ for better performance
 
 - [`ZipInputFile`](../interfaces/ZipInputFile.md)
 
-## Table of contents
-
-### Constructors
-
-- [constructor](ZipDeflate.md#constructor)
-
-### Properties
-
-- [attrs](ZipDeflate.md#attrs)
-- [comment](ZipDeflate.md#comment)
-- [compression](ZipDeflate.md#compression)
-- [crc](ZipDeflate.md#crc)
-- [extra](ZipDeflate.md#extra)
-- [filename](ZipDeflate.md#filename)
-- [flag](ZipDeflate.md#flag)
-- [mtime](ZipDeflate.md#mtime)
-- [ondata](ZipDeflate.md#ondata)
-- [os](ZipDeflate.md#os)
-- [size](ZipDeflate.md#size)
-
-### Methods
-
-- [process](ZipDeflate.md#process)
-- [push](ZipDeflate.md#push)
-
 ## Constructors
 
-### constructor
+### Constructor
 
-• **new ZipDeflate**(`filename`, `opts?`)
+> **new ZipDeflate**(`filename`: `string`, `opts?`: [`DeflateOptions`](../interfaces/DeflateOptions.md)): `ZipDeflate`
 
 Creates a DEFLATE stream that can be added to ZIP archives
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `filename` | `string` | The filename to associate with this data stream |
-| `opts?` | [`DeflateOptions`](../interfaces/DeflateOptions.md) | The compression options |
+##### filename
+
+`string`
+
+The filename to associate with this data stream
+
+##### opts?
+
+[`DeflateOptions`](../interfaces/DeflateOptions.md)
+
+The compression options
+
+#### Returns
+
+`ZipDeflate`
 
 ## Properties
 
-### attrs
+### attrs?
 
-• `Optional` **attrs**: `number`
+> `optional` **attrs?**: `number`
 
 The file's attributes. These are traditionally somewhat complicated
 and platform-dependent, so using them is scarcely necessary. However,
@@ -75,13 +65,13 @@ Note that attributes usually only work in conjunction with the `os` setting: you
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[attrs](../interfaces/ZipInputFile.md#attrs)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`attrs`](../interfaces/ZipInputFile.md#attrs)
 
-___
+***
 
-### comment
+### comment?
 
-• `Optional` **comment**: `string`
+> `optional` **comment?**: `string`
 
 The comment to attach to the file. This field is defined by PKZIP's APPNOTE.txt,
 section 4.4.26. The comment must be at most 65,535 bytes long UTF-8 encoded. This
@@ -89,13 +79,13 @@ field is not read by consumer software.
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[comment](../interfaces/ZipInputFile.md#comment)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`comment`](../interfaces/ZipInputFile.md#comment)
 
-___
+***
 
 ### compression
 
-• **compression**: `number`
+> **compression**: `number`
 
 The compression format for the data stream. This number is determined by
 the spec in PKZIP's APPNOTE.txt, section 4.4.5. For example, 0 = no
@@ -103,13 +93,13 @@ compression, 8 = deflate, 14 = LZMA
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[compression](../interfaces/ZipInputFile.md#compression)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`compression`](../interfaces/ZipInputFile.md#compression)
 
-___
+***
 
 ### crc
 
-• **crc**: `number`
+> **crc**: `number`
 
 A CRC of the original file contents. This attribute may be invalid after
 the file is added to the ZIP archive; it must be correct only before the
@@ -121,13 +111,13 @@ ZipDeflate or AsyncZipDeflate.
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[crc](../interfaces/ZipInputFile.md#crc)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`crc`](../interfaces/ZipInputFile.md#crc)
 
-___
+***
 
-### extra
+### extra?
 
-• `Optional` **extra**: `Record`<`number`, `Uint8Array`\>
+> `optional` **extra?**: `Record`\<`number`, `Uint8Array`\>
 
 Extra metadata to add to the file. This field is defined by PKZIP's APPNOTE.txt,
 section 4.4.28. At most 65,535 bytes may be used in each ID. The ID must be an
@@ -138,13 +128,13 @@ proprietary standards and software.
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[extra](../interfaces/ZipInputFile.md#extra)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`extra`](../interfaces/ZipInputFile.md#extra)
 
-___
+***
 
 ### filename
 
-• **filename**: `string`
+> **filename**: `string`
 
 The filename to associate with the data provided to this stream. If you
 want a file in a subdirectory, use forward slashes as a separator (e.g.
@@ -152,13 +142,13 @@ want a file in a subdirectory, use forward slashes as a separator (e.g.
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[filename](../interfaces/ZipInputFile.md#filename)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`filename`](../interfaces/ZipInputFile.md#filename)
 
-___
+***
 
 ### flag
 
-• **flag**: ``0`` \| ``2`` \| ``1`` \| ``3``
+> **flag**: `0` \| `1` \| `2` \| `3`
 
 Bits 1 and 2 of the general purpose bit flag, specified in PKZIP's
 APPNOTE.txt, section 4.4.4. Should be between 0 and 3. This is unlikely
@@ -166,25 +156,25 @@ to be necessary.
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[flag](../interfaces/ZipInputFile.md#flag)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`flag`](../interfaces/ZipInputFile.md#flag)
 
-___
+***
 
-### mtime
+### mtime?
 
-• `Optional` **mtime**: `string` \| `number` \| `Date`
+> `optional` **mtime?**: `string` \| `number` \| `Date`
 
 When the file was last modified. Defaults to the current time.
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[mtime](../interfaces/ZipInputFile.md#mtime)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`mtime`](../interfaces/ZipInputFile.md#mtime)
 
-___
+***
 
 ### ondata
 
-• **ondata**: [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler)
+> **ondata**: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
 
 The handler to be called when data is added. After passing this stream to
 the ZIP file object, this handler will always be defined. To call it:
@@ -200,13 +190,13 @@ final = boolean, whether this is the final chunk in the stream
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[ondata](../interfaces/ZipInputFile.md#ondata)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`ondata`](../interfaces/ZipInputFile.md#ondata)
 
-___
+***
 
-### os
+### os?
 
-• `Optional` **os**: `number`
+> `optional` **os?**: `number`
 
 The operating system of origin for this file. The value is defined
 by PKZIP's APPNOTE.txt, section 4.4.2.2. For example, 0 (the default)
@@ -214,13 +204,13 @@ is MS/DOS, 3 is Unix, 19 is macOS.
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[os](../interfaces/ZipInputFile.md#os)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`os`](../interfaces/ZipInputFile.md#os)
 
-___
+***
 
 ### size
 
-• **size**: `number`
+> **size**: `number`
 
 The size of the file in bytes. This attribute may be invalid after
 the file is added to the ZIP archive; it must be correct only before the
@@ -232,39 +222,29 @@ ZipDeflate or AsyncZipDeflate.
 
 #### Implementation of
 
-[ZipInputFile](../interfaces/ZipInputFile.md).[size](../interfaces/ZipInputFile.md#size)
+[`ZipInputFile`](../interfaces/ZipInputFile.md).[`size`](../interfaces/ZipInputFile.md#size)
 
 ## Methods
 
-### process
+### push()
 
-▸ **process**(`chunk`, `final`): `void`
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `chunk` | `Uint8Array` |
-| `final` | `boolean` |
-
-#### Returns
-
-`void`
-
-___
-
-### push
-
-▸ **push**(`chunk`, `final?`): `void`
+> **push**(`chunk`: `Uint8Array`, `final?`: `boolean`): `void`
 
 Pushes a chunk to be deflated
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `chunk` | `Uint8Array` | The chunk to push |
-| `final?` | `boolean` | Whether this is the last chunk |
+##### chunk
+
+`Uint8Array`
+
+The chunk to push
+
+##### final?
+
+`boolean`
+
+Whether this is the last chunk
 
 #### Returns
 

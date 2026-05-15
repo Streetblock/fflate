@@ -93,7 +93,7 @@
     "build:umd": "SC=buildUMD npm run script",
     "build:rewrite": "SC=rewriteBuilds npm run script",
     "build:demo": "tsc --project tsconfig.demo.json && parcel build demo/index.html --no-cache --public-url \"./\" && SC=cpGHPages npm run script",
-    "build:docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --readme none --disableSources --excludePrivate --excludeProtected --githubPages false --out docs/ src/index.ts",
+    "build:docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --readme none --disableSources --excludePrivate --excludeProtected --expandParameters --githubPages false --out docs/ src/index.ts",
     "test": "TS_NODE_PROJECT=test/tsconfig.json uvu -b -r ts-node/register test",
     "prepack": "npm run build && npm run test"
   },
@@ -112,11 +112,11 @@
     "simple-git": "^3.19.1",
     "terser": "^5.3.8",
     "tiny-inflate": "*",
-    "ts-node": "^10.9.1",
-    "typedoc": "^0.25.0",
-    "typedoc-plugin-markdown": "^3.16.0",
-    "typescript": "^5.2.2",
-    "uvu": "^0.3.3",
+    "ts-node": "^10.9.2",
+    "typedoc": "^0.28.19",
+    "typedoc-plugin-markdown": "^4.11.0",
+    "typescript": "^6.0.3",
+    "uvu": "^0.5.6",
     "uzip": "*"
   },
   "alias": {

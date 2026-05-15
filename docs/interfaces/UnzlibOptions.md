@@ -1,25 +1,26 @@
-# Interface: UnzlibOptions
+[**fflate**](../README.md)
+
+***
+
+# Interface: UnzlibOptions\<TArrayBuffer\>
 
 Options for decompressing Zlib data
 
-## Hierarchy
+## Extends
 
-- [`InflateOptions`](InflateOptions.md)
+- [`InflateOptions`](InflateOptions.md)\<`TArrayBuffer`\>
 
-  ↳ **`UnzlibOptions`**
+## Type Parameters
 
-## Table of contents
+### TArrayBuffer
 
-### Properties
-
-- [dictionary](UnzlibOptions.md#dictionary)
-- [out](UnzlibOptions.md#out)
+`TArrayBuffer` *extends* `ArrayBufferLike` = `ArrayBufferLike`
 
 ## Properties
 
-### dictionary
+### dictionary?
 
-• `Optional` **dictionary**: `Uint8Array`
+> `optional` **dictionary?**: `Uint8Array`
 
 The dictionary used to compress the original data. If no dictionary was used during compression, this option has no effect.
 
@@ -27,13 +28,13 @@ Supplying the wrong dictionary during decompression usually yields corrupt outpu
 
 #### Inherited from
 
-[InflateOptions](InflateOptions.md).[dictionary](InflateOptions.md#dictionary)
+[`InflateOptions`](InflateOptions.md).[`dictionary`](InflateOptions.md#dictionary)
 
-___
+***
 
-### out
+### out?
 
-• `Optional` **out**: `Uint8Array`
+> `optional` **out?**: `Uint8Array`\<`TArrayBuffer`\>
 
 The buffer into which to write the decompressed data. Saves memory if you know the decompressed size in advance.
 
@@ -41,4 +42,4 @@ Note that if the decompression result is larger than the size of this buffer, it
 
 #### Inherited from
 
-[InflateOptions](InflateOptions.md).[out](InflateOptions.md#out)
+[`InflateOptions`](InflateOptions.md).[`out`](InflateOptions.md#out)

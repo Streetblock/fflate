@@ -1,42 +1,33 @@
+[**fflate**](../README.md)
+
+***
+
 # Interface: AsyncZlibOptions
 
 Options for compressing data asynchronously into a Zlib format
 
-## Hierarchy
+## Extends
 
-- [`ZlibOptions`](ZlibOptions.md)
-
-- `AsyncOptions`
-
-  ↳ **`AsyncZlibOptions`**
-
-## Table of contents
-
-### Properties
-
-- [consume](AsyncZlibOptions.md#consume)
-- [dictionary](AsyncZlibOptions.md#dictionary)
-- [level](AsyncZlibOptions.md#level)
-- [mem](AsyncZlibOptions.md#mem)
+- [`ZlibOptions`](ZlibOptions.md).`AsyncOptions`
 
 ## Properties
 
-### consume
+### consume?
 
-• `Optional` **consume**: `boolean`
+> `optional` **consume?**: `boolean`
 
 Whether or not to "consume" the source data. This will make the typed array/buffer you pass in
 unusable but will increase performance and reduce memory usage.
 
 #### Inherited from
 
-AsyncOptions.consume
+`AsyncOptions.consume`
 
-___
+***
 
-### dictionary
+### dictionary?
 
-• `Optional` **dictionary**: `Uint8Array`
+> `optional` **dictionary?**: `Uint8Array`
 
 A buffer containing common byte sequences in the input data that can be used to significantly improve compression ratios.
 
@@ -49,13 +40,13 @@ Avoid using dictionaries with GZIP and ZIP to maximize software compatibility.
 
 #### Inherited from
 
-[ZlibOptions](ZlibOptions.md).[dictionary](ZlibOptions.md#dictionary)
+[`ZlibOptions`](ZlibOptions.md).[`dictionary`](ZlibOptions.md#dictionary)
 
-___
+***
 
-### level
+### level?
 
-• `Optional` **level**: ``0`` \| ``2`` \| ``1`` \| ``3`` \| ``4`` \| ``8`` \| ``5`` \| ``6`` \| ``7`` \| ``9``
+> `optional` **level?**: `0` \| `1` \| `2` \| `3` \| `4` \| `5` \| `6` \| `7` \| `8` \| `9`
 
 The level of compression to use, ranging from 0-9.
 
@@ -73,17 +64,17 @@ For example, a 1 MB text file could:
 
 #### Inherited from
 
-[ZlibOptions](ZlibOptions.md).[level](ZlibOptions.md#level)
+[`ZlibOptions`](ZlibOptions.md).[`level`](ZlibOptions.md#level)
 
-___
+***
 
-### mem
+### mem?
 
-• `Optional` **mem**: ``0`` \| ``2`` \| ``1`` \| ``3`` \| ``4`` \| ``8`` \| ``5`` \| ``6`` \| ``10`` \| ``7`` \| ``12`` \| ``9`` \| ``11``
+> `optional` **mem?**: `0` \| `1` \| `2` \| `3` \| `4` \| `5` \| `6` \| `7` \| `8` \| `9` \| `10` \| `11` \| `12`
 
 The memory level to use, ranging from 0-12. Increasing this increases speed and compression ratio at the cost of memory.
 
-Note that this is exponential: while level 0 uses 4 kB, level 4 uses 64 kB, level 8 uses 1 MB, and level 12 uses 16 MB.
+Note that this is exponential: while level 0 uses 8 kB, level 4 uses 128 kB, level 8 uses 2 MB, and level 12 uses 32 MB.
 It is recommended not to lower the value below 4, since that tends to hurt performance.
 In addition, values above 8 tend to help very little on most data and can even hurt performance.
 
@@ -91,4 +82,4 @@ The default value is automatically determined based on the size of the input dat
 
 #### Inherited from
 
-[ZlibOptions](ZlibOptions.md).[mem](ZlibOptions.md#mem)
+[`ZlibOptions`](ZlibOptions.md).[`mem`](ZlibOptions.md#mem)

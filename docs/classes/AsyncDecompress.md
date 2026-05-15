@@ -1,86 +1,100 @@
+[**fflate**](../README.md)
+
+***
+
 # Class: AsyncDecompress
 
 Asynchronous streaming GZIP, Zlib, or raw DEFLATE decompression
 
-## Table of contents
-
-### Constructors
-
-- [constructor](AsyncDecompress.md#constructor)
-
-### Properties
-
-- [ondata](AsyncDecompress.md#ondata)
-- [ondrain](AsyncDecompress.md#ondrain)
-- [queuedSize](AsyncDecompress.md#queuedsize)
-
-### Methods
-
-- [push](AsyncDecompress.md#push)
-
 ## Constructors
 
-### constructor
+### Constructor
 
-• **new AsyncDecompress**(`opts`, `cb?`)
-
-Creates an asynchronous decompression stream
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `opts` | [`InflateStreamOptions`](../interfaces/InflateStreamOptions.md) | The decompression options |
-| `cb?` | [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler) | The callback to call whenever data is decompressed |
-
-• **new AsyncDecompress**(`cb?`)
+> **new AsyncDecompress**(`opts`: [`InflateStreamOptions`](../interfaces/InflateStreamOptions.md), `cb?`: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)): `AsyncDecompress`
 
 Creates an asynchronous decompression stream
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `cb?` | [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler) | The callback to call whenever data is decompressed |
+##### opts
+
+[`InflateStreamOptions`](../interfaces/InflateStreamOptions.md)
+
+The decompression options
+
+##### cb?
+
+[`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
+
+The callback to call whenever data is decompressed
+
+#### Returns
+
+`AsyncDecompress`
+
+### Constructor
+
+> **new AsyncDecompress**(`cb?`: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)): `AsyncDecompress`
+
+Creates an asynchronous decompression stream
+
+#### Parameters
+
+##### cb?
+
+[`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
+
+The callback to call whenever data is decompressed
+
+#### Returns
+
+`AsyncDecompress`
 
 ## Properties
 
 ### ondata
 
-• **ondata**: [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler)
+> **ondata**: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
 
 The handler to call whenever data is available
 
-___
+***
 
-### ondrain
+### ondrain?
 
-• `Optional` **ondrain**: [`AsyncFlateDrainHandler`](../README.md#asyncflatedrainhandler)
+> `optional` **ondrain?**: [`AsyncFlateDrainHandler`](../type-aliases/AsyncFlateDrainHandler.md)
 
 The handler to call whenever buffered source data is processed (i.e. `queuedSize` updates)
 
-___
+***
 
 ### queuedSize
 
-• **queuedSize**: `number`
+> **queuedSize**: `number`
 
 The number of compressed bytes buffered in the stream
 
 ## Methods
 
-### push
+### push()
 
-▸ **push**(`chunk`, `final?`): `void`
+> **push**(`chunk`: `Uint8Array`, `final?`: `boolean`): `void`
 
 Pushes a chunk to be decompressed
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `chunk` | `Uint8Array` | The chunk to push |
-| `final?` | `boolean` | Whether this is the last chunk |
+##### chunk
+
+`Uint8Array`
+
+The chunk to push
+
+##### final?
+
+`boolean`
+
+Whether this is the last chunk
 
 #### Returns
 
