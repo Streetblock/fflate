@@ -993,6 +993,21 @@ export interface AsyncZlibOptions extends ZlibOptions, AsyncOptions {}
 export interface AsyncUnzlibOptions extends AsyncInflateOptions {}
 
 /**
+ * Options for decompressing raw bzip2 data.
+ */
+export interface Bunzip2Options {
+  /**
+   * The expected decompressed size, if known.
+   */
+  size?: number;
+}
+
+/**
+ * Options for asynchronously decompressing raw bzip2 data.
+ */
+export interface AsyncBunzip2Options extends Bunzip2Options, AsyncOptions {}
+
+/**
  * A terminable compression/decompression process
  */
 export interface AsyncTerminable {
@@ -2385,6 +2400,44 @@ export function decompressSync(data: Uint8Array, opts?: InflateOptions) {
     : ((data[0] & 15) != 8 || (data[0] >> 4) > 7 || ((data[0] << 8 | data[1]) % 31))
       ? inflateSync(data, opts)
       : unzlibSync(data, opts);
+}
+
+/**
+ * Asynchronously decompresses raw bzip2 data.
+ * @param data The data to decompress
+ * @param opts The decompression options
+ * @param cb The function to be called upon decompression completion
+ * @returns A function that can be used to immediately terminate the decompression
+ */
+export function bunzip2(data: Uint8Array, opts: AsyncBunzip2Options, cb: FlateCallback): AsyncTerminable;
+/**
+ * Asynchronously decompresses raw bzip2 data.
+ * @param data The data to decompress
+ * @param cb The function to be called upon decompression completion
+ * @returns A function that can be used to immediately terminate the decompression
+ */
+export function bunzip2(data: Uint8Array, cb: FlateCallback): AsyncTerminable;
+export function bunzip2(data: Uint8Array, opts: AsyncBunzip2Options | FlateCallback, cb?: FlateCallback) {
+  if (!cb) cb = opts as FlateCallback, opts = {};
+  if (typeof cb != 'function') err(7);
+  const t = setTimeout(() => {
+    try {
+      cb(null, bzip2Decode(data, (opts as AsyncBunzip2Options).size));
+    } catch (e) {
+      cb(e as FlateError, null);
+    }
+  }, 0);
+  return () => clearTimeout(t);
+}
+
+/**
+ * Decompresses raw bzip2 data.
+ * @param data The data to decompress
+ * @param opts The decompression options
+ * @returns The decompressed version of the data
+ */
+export function bunzip2Sync(data: Uint8Array, opts?: Bunzip2Options) {
+  return bzip2Decode(data, opts && opts.size);
 }
 
 /**
