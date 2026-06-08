@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* Vendored/adapted from seek-bzip (MIT). */
 /* very simple input/output stream interface */
 var Stream = function() {

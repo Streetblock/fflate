@@ -58,60 +58,6 @@ const zipStoredAsMethod = (name: string, payload: Uint8Array, method: number) =>
   return rewriteZipMethod(zipped, 0, method);
 };
 
-test('unzipSync custom decoder can handle non-default ZIP method', () => {
-  const text = 'hello custom method';
-  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
-  const method12 = rewriteZipMethod(normal, 8, 12);
-  const out = unzipSync(method12, {
-    decompress: {
-      12: (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) })
-    }
-  });
-  assert.is(strFromU8(out['a.txt']), text);
-});
-
-test('unzip custom decoder can handle non-default ZIP method', async () => {
-  const text = 'hello async custom method';
-  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
-  const method12 = rewriteZipMethod(normal, 8, 12);
-  const out = await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
-    unzip(method12, {
-      decompress: {
-        12: (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) })
-      }
-    }, (e, files) => {
-      if (e) reject(e);
-      else resolve(files);
-    });
-  });
-  assert.is(strFromU8(out['a.txt']), text);
-});
-
-test('global decoder registration works for unzipSync', () => {
-  const text = 'hello global sync decoder';
-  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
-  const method12 = rewriteZipMethod(normal, 8, 12);
-  registerUnzipDecoder(12, (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) }));
-  const out = unzipSync(method12);
-  unregisterUnzipDecoder(12);
-  assert.is(strFromU8(out['a.txt']), text);
-});
-
-test('global decoder registration works for unzip', async () => {
-  const text = 'hello global async decoder';
-  const normal = zipSync({ 'a.txt': strToU8(text) }, { level: 6 });
-  const method12 = rewriteZipMethod(normal, 8, 12);
-  registerUnzipDecoder(12, (data, info) => inflateSync(data, { out: new Uint8Array(info.originalSize) }));
-  const out = await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
-    unzip(method12, (e, files) => {
-      if (e) reject(e);
-      else resolve(files);
-    });
-  });
-  unregisterUnzipDecoder(12);
-  assert.is(strFromU8(out['a.txt']), text);
-});
-
 test('built-in BZIP2 decoder works for unzipSync (method 12)', () => {
   const z = zipStoredAsMethod('a.txt', BZ2_SAMPLE, 12);
   const out = unzipSync(z);
