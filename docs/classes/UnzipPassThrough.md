@@ -1,3 +1,7 @@
+[**fflate**](../README.md)
+
+***
+
 # Class: UnzipPassThrough
 
 Streaming pass-through decompression for ZIP archives
@@ -6,59 +10,55 @@ Streaming pass-through decompression for ZIP archives
 
 - [`UnzipDecoder`](../interfaces/UnzipDecoder.md)
 
-## Table of contents
-
-### Constructors
-
-- [constructor](UnzipPassThrough.md#constructor)
-
-### Properties
-
-- [ondata](UnzipPassThrough.md#ondata)
-- [compression](UnzipPassThrough.md#compression)
-
-### Methods
-
-- [push](UnzipPassThrough.md#push)
-
 ## Constructors
 
-### constructor
+### Constructor
 
-• **new UnzipPassThrough**()
+> **new UnzipPassThrough**(): `UnzipPassThrough`
+
+#### Returns
+
+`UnzipPassThrough`
 
 ## Properties
 
 ### ondata
 
-• **ondata**: [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler)
+> **ondata**: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
 
 The handler to call whenever data is available
 
 #### Implementation of
 
-[UnzipDecoder](../interfaces/UnzipDecoder.md).[ondata](../interfaces/UnzipDecoder.md#ondata)
+[`UnzipDecoder`](../interfaces/UnzipDecoder.md).[`ondata`](../interfaces/UnzipDecoder.md#ondata)
 
-___
+***
 
 ### compression
 
-▪ `Static` **compression**: `number` = `0`
+> `static` **compression**: `number` = `0`
 
 ## Methods
 
-### push
+### push()
 
-▸ **push**(`data`, `final`): `void`
+> **push**(`chunk`: `Uint8Array`, `final`: `boolean`): `void`
 
 Pushes a chunk to be decompressed
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `data` | `Uint8Array` | The data in this chunk. Do not consume (detach) this data. |
-| `final` | `boolean` | Whether this is the last chunk in the data stream |
+##### chunk
+
+`Uint8Array`
+
+The data in this chunk. Do not consume (detach) this buffer.
+
+##### final
+
+`boolean`
+
+Whether this is the last chunk in the data stream
 
 #### Returns
 
@@ -66,4 +66,4 @@ Pushes a chunk to be decompressed
 
 #### Implementation of
 
-[UnzipDecoder](../interfaces/UnzipDecoder.md).[push](../interfaces/UnzipDecoder.md#push)
+[`UnzipDecoder`](../interfaces/UnzipDecoder.md).[`push`](../interfaces/UnzipDecoder.md#push)

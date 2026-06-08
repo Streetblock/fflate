@@ -1,32 +1,23 @@
+[**fflate**](../README.md)
+
+***
+
 # Interface: DeflateOptions
 
 Options for compressing data into a DEFLATE format
 
-## Hierarchy
+## Extended by
 
-- **`DeflateOptions`**
-
-  ↳ [`GzipOptions`](GzipOptions.md)
-
-  ↳ [`ZlibOptions`](ZlibOptions.md)
-
-  ↳ [`AsyncDeflateOptions`](AsyncDeflateOptions.md)
-
-  ↳ [`ZipOptions`](ZipOptions.md)
-
-## Table of contents
-
-### Properties
-
-- [dictionary](DeflateOptions.md#dictionary)
-- [level](DeflateOptions.md#level)
-- [mem](DeflateOptions.md#mem)
+- [`GzipOptions`](GzipOptions.md)
+- [`ZlibOptions`](ZlibOptions.md)
+- [`AsyncDeflateOptions`](AsyncDeflateOptions.md)
+- [`ZipOptions`](ZipOptions.md)
 
 ## Properties
 
-### dictionary
+### dictionary?
 
-• `Optional` **dictionary**: `Uint8Array`
+> `optional` **dictionary?**: `Uint8Array`
 
 A buffer containing common byte sequences in the input data that can be used to significantly improve compression ratios.
 
@@ -37,11 +28,11 @@ Dictionaries only improve aggregate compression ratio when reused across multipl
 
 Avoid using dictionaries with GZIP and ZIP to maximize software compatibility.
 
-___
+***
 
-### level
+### level?
 
-• `Optional` **level**: ``0`` \| ``2`` \| ``1`` \| ``3`` \| ``4`` \| ``8`` \| ``5`` \| ``6`` \| ``7`` \| ``9``
+> `optional` **level?**: `0` \| `1` \| `2` \| `3` \| `4` \| `5` \| `6` \| `7` \| `8` \| `9`
 
 The level of compression to use, ranging from 0-9.
 
@@ -57,15 +48,15 @@ For example, a 1 MB text file could:
 - become 400 kB with level 1 in 10ms
 - become 320 kB with level 9 in 100ms
 
-___
+***
 
-### mem
+### mem?
 
-• `Optional` **mem**: ``0`` \| ``2`` \| ``1`` \| ``3`` \| ``4`` \| ``8`` \| ``5`` \| ``6`` \| ``10`` \| ``7`` \| ``12`` \| ``9`` \| ``11``
+> `optional` **mem?**: `0` \| `1` \| `2` \| `3` \| `4` \| `5` \| `6` \| `7` \| `8` \| `9` \| `10` \| `11` \| `12`
 
 The memory level to use, ranging from 0-12. Increasing this increases speed and compression ratio at the cost of memory.
 
-Note that this is exponential: while level 0 uses 4 kB, level 4 uses 64 kB, level 8 uses 1 MB, and level 12 uses 16 MB.
+Note that this is exponential: while level 0 uses 8 kB, level 4 uses 128 kB, level 8 uses 2 MB, and level 12 uses 32 MB.
 It is recommended not to lower the value below 4, since that tends to hurt performance.
 In addition, values above 8 tend to help very little on most data and can even hurt performance.
 

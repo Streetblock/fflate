@@ -72,10 +72,10 @@ export const testSuites = async <T extends Record<string, TestHandler>, D extend
       for (const name in tf) {
         ste(name, async () => {
           let ts = performance.now();
-          await suites[k](localTestFiles[name], name, () => {
+          await suites[k](localTestFiles[name as keyof typeof localTestFiles], name, () => {
             ts = performance.now();
           });
-          localPerf[name] = performance.now() - ts;
+          localPerf[name as keyof typeof localPerf] = performance.now() - ts;
         });
       }
       ste.after(() => {
@@ -111,7 +111,7 @@ const cws = (pkg: string, method: string = '_cjsDefault') => `
 `;
 
 export type Workerized = (workerData: Uint8Array | [Uint8Array, {}], transferable?: ArrayBuffer[]) => WorkerizedResult;
-export interface WorkerizedResult extends PromiseLike<Uint8Array> {
+export interface WorkerizedResult extends PromiseLike<Uint8Array<ArrayBuffer>> {
   timeout(ms: number): void;
 };
 
@@ -189,8 +189,9 @@ export const workers = {
   }
 };
 
+
 export const bClone = (buf: Buffer) => {
-  const clone = Buffer.allocUnsafe(buf.length);
+  const clone = Buffer.allocUnsafeSlow(buf.length);
   clone.set(buf);
   return clone;
 }

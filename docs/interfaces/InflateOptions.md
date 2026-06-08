@@ -1,27 +1,30 @@
-# Interface: InflateOptions
+[**fflate**](../README.md)
+
+***
+
+# Interface: InflateOptions\<TArrayBuffer\>
 
 Options for decompressing DEFLATE data
 
-## Hierarchy
+## Extends
 
 - [`InflateStreamOptions`](InflateStreamOptions.md)
 
-  ↳ **`InflateOptions`**
+## Extended by
 
-  ↳↳ [`UnzlibOptions`](UnzlibOptions.md)
+- [`UnzlibOptions`](UnzlibOptions.md)
 
-## Table of contents
+## Type Parameters
 
-### Properties
+### TArrayBuffer
 
-- [dictionary](InflateOptions.md#dictionary)
-- [out](InflateOptions.md#out)
+`TArrayBuffer` *extends* `ArrayBufferLike` = `ArrayBufferLike`
 
 ## Properties
 
-### dictionary
+### dictionary?
 
-• `Optional` **dictionary**: `Uint8Array`
+> `optional` **dictionary?**: `Uint8Array`
 
 The dictionary used to compress the original data. If no dictionary was used during compression, this option has no effect.
 
@@ -29,13 +32,13 @@ Supplying the wrong dictionary during decompression usually yields corrupt outpu
 
 #### Inherited from
 
-[InflateStreamOptions](InflateStreamOptions.md).[dictionary](InflateStreamOptions.md#dictionary)
+[`InflateStreamOptions`](InflateStreamOptions.md).[`dictionary`](InflateStreamOptions.md#dictionary)
 
-___
+***
 
-### out
+### out?
 
-• `Optional` **out**: `Uint8Array`
+> `optional` **out?**: `Uint8Array`\<`TArrayBuffer`\>
 
 The buffer into which to write the decompressed data. Saves memory if you know the decompressed size in advance.
 

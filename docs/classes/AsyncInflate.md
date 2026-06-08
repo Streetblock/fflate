@@ -1,96 +1,109 @@
+[**fflate**](../README.md)
+
+***
+
 # Class: AsyncInflate
 
 Asynchronous streaming DEFLATE decompression
 
-## Table of contents
-
-### Constructors
-
-- [constructor](AsyncInflate.md#constructor)
-
-### Properties
-
-- [ondata](AsyncInflate.md#ondata)
-- [ondrain](AsyncInflate.md#ondrain)
-- [queuedSize](AsyncInflate.md#queuedsize)
-- [terminate](AsyncInflate.md#terminate)
-
-### Methods
-
-- [push](AsyncInflate.md#push)
-
 ## Constructors
 
-### constructor
+### Constructor
 
-• **new AsyncInflate**(`opts`, `cb?`)
-
-Creates an asynchronous DEFLATE decompression stream
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `opts` | [`InflateStreamOptions`](../interfaces/InflateStreamOptions.md) | The decompression options |
-| `cb?` | [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler) | The callback to call whenever data is inflated |
-
-• **new AsyncInflate**(`cb?`)
+> **new AsyncInflate**(`opts`: [`InflateStreamOptions`](../interfaces/InflateStreamOptions.md), `cb?`: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)): `AsyncInflate`
 
 Creates an asynchronous DEFLATE decompression stream
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `cb?` | [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler) | The callback to call whenever data is inflated |
+##### opts
+
+[`InflateStreamOptions`](../interfaces/InflateStreamOptions.md)
+
+The decompression options
+
+##### cb?
+
+[`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
+
+The callback to call whenever data is inflated
+
+#### Returns
+
+`AsyncInflate`
+
+### Constructor
+
+> **new AsyncInflate**(`cb?`: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)): `AsyncInflate`
+
+Creates an asynchronous DEFLATE decompression stream
+
+#### Parameters
+
+##### cb?
+
+[`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
+
+The callback to call whenever data is inflated
+
+#### Returns
+
+`AsyncInflate`
 
 ## Properties
 
 ### ondata
 
-• **ondata**: [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler)
+> **ondata**: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
 
 The handler to call whenever data is available
 
-___
+***
 
-### ondrain
+### ondrain?
 
-• `Optional` **ondrain**: [`AsyncFlateDrainHandler`](../README.md#asyncflatedrainhandler)
+> `optional` **ondrain?**: [`AsyncFlateDrainHandler`](../type-aliases/AsyncFlateDrainHandler.md)
 
 The handler to call whenever buffered source data is processed (i.e. `queuedSize` updates)
 
-___
+***
 
 ### queuedSize
 
-• **queuedSize**: `number`
+> **queuedSize**: `number`
 
 The number of compressed bytes buffered in the stream
 
-___
+***
 
 ### terminate
 
-• **terminate**: [`AsyncTerminable`](../interfaces/AsyncTerminable.md)
+> **terminate**: [`AsyncTerminable`](../interfaces/AsyncTerminable.md)
 
 A method to terminate the stream's internal worker. Subsequent calls to
 push() will silently fail.
 
 ## Methods
 
-### push
+### push()
 
-▸ **push**(`chunk`, `final?`): `void`
+> **push**(`chunk`: `Uint8Array`, `final?`: `boolean`): `void`
 
 Pushes a chunk to be inflated
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `chunk` | `Uint8Array` | The chunk to push |
-| `final?` | `boolean` | Whether this is the last chunk |
+##### chunk
+
+`Uint8Array`
+
+The chunk to push
+
+##### final?
+
+`boolean`
+
+Whether this is the last chunk
 
 #### Returns
 
