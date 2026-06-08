@@ -1,55 +1,49 @@
+[**fflate**](../README.md)
+
+***
+
 # Interface: UnzipDecoder
 
 A decoder for files in ZIP streams
-
-## Implemented by
-
-- [`AsyncUnzipInflate`](../classes/AsyncUnzipInflate.md)
-- [`UnzipInflate`](../classes/UnzipInflate.md)
-- [`UnzipPassThrough`](../classes/UnzipPassThrough.md)
-
-## Table of contents
-
-### Properties
-
-- [ondata](UnzipDecoder.md#ondata)
-- [terminate](UnzipDecoder.md#terminate)
-
-### Methods
-
-- [push](UnzipDecoder.md#push)
 
 ## Properties
 
 ### ondata
 
-• **ondata**: [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler)
+> **ondata**: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
 
 The handler to call whenever data is available
 
-___
+***
 
-### terminate
+### terminate?
 
-• `Optional` **terminate**: [`AsyncTerminable`](AsyncTerminable.md)
+> `optional` **terminate?**: [`AsyncTerminable`](AsyncTerminable.md)
 
 A method to terminate any internal workers used by the stream. Subsequent
 calls to push() should silently fail.
 
 ## Methods
 
-### push
+### push()
 
-▸ **push**(`data`, `final`): `void`
+> **push**(`chunk`: `Uint8Array`, `final`: `boolean`): `void`
 
 Pushes a chunk to be decompressed
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `data` | `Uint8Array` | The data in this chunk. Do not consume (detach) this data. |
-| `final` | `boolean` | Whether this is the last chunk in the data stream |
+##### chunk
+
+`Uint8Array`
+
+The data in this chunk. Do not consume (detach) this buffer.
+
+##### final
+
+`boolean`
+
+Whether this is the last chunk in the data stream
 
 #### Returns
 

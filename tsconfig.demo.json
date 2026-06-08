@@ -5,7 +5,7 @@
     "module": "ESNext",
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
+    "strict": false
   },
   "include": ["demo/**/*.ts", "demo/**/*.tsx", "demo/augment.d.ts"],
   "exclude": ["demo/sw.ts"]

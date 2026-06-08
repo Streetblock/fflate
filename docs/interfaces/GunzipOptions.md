@@ -1,25 +1,26 @@
-# Interface: GunzipOptions
+[**fflate**](../README.md)
+
+***
+
+# Interface: GunzipOptions\<TArrayBuffer\>
 
 Options for decompressing GZIP data
 
-## Hierarchy
+## Extends
 
 - [`InflateStreamOptions`](InflateStreamOptions.md)
 
-  ↳ **`GunzipOptions`**
+## Type Parameters
 
-## Table of contents
+### TArrayBuffer
 
-### Properties
-
-- [dictionary](GunzipOptions.md#dictionary)
-- [out](GunzipOptions.md#out)
+`TArrayBuffer` *extends* `ArrayBufferLike` = `ArrayBufferLike`
 
 ## Properties
 
-### dictionary
+### dictionary?
 
-• `Optional` **dictionary**: `Uint8Array`
+> `optional` **dictionary?**: `Uint8Array`
 
 The dictionary used to compress the original data. If no dictionary was used during compression, this option has no effect.
 
@@ -27,13 +28,13 @@ Supplying the wrong dictionary during decompression usually yields corrupt outpu
 
 #### Inherited from
 
-[InflateStreamOptions](InflateStreamOptions.md).[dictionary](InflateStreamOptions.md#dictionary)
+[`InflateStreamOptions`](InflateStreamOptions.md).[`dictionary`](InflateStreamOptions.md#dictionary)
 
-___
+***
 
-### out
+### out?
 
-• `Optional` **out**: `Uint8Array`
+> `optional` **out?**: `Uint8Array`\<`TArrayBuffer`\>
 
 The buffer into which to write the decompressed data. GZIP already encodes the output size, so providing this doesn't save memory.
 
