@@ -3820,7 +3820,7 @@ export function unzip(data: Uint8Array, opts: AsyncUnzipOptions | UnzipCallback,
           else term.push(inflate(infl, { size: su }, cbl));
         } else if (c == 12 && !(dcmp && dcmp[c])) {
           const infl = data.subarray(b, b + sc);
-          // Keep tiny BZIP2 entries sync; offload larger ones to a worker.
+          // Keep tiny BZIP2 entries sync; defer larger ones to the next tick.
           if (su < 262144) {
             try {
               cbl(null, bzip2Decode(infl));
@@ -3828,9 +3828,14 @@ export function unzip(data: Uint8Array, opts: AsyncUnzipOptions | UnzipCallback,
               cbl(e, null);
             }
           } else {
-            term.push(cbify(infl, {}, [
-              bze
-            ], ev => pbf(bzip2Decode(ev.data[0])), 6, cbl));
+            const t = setTimeout(() => {
+              try {
+                cbl(null, bzip2Decode(infl));
+              } catch (e) {
+                cbl(e, null);
+              }
+            }, 0);
+            term.push(() => clearTimeout(t));
           }
         } else if ((dcmp && dcmp[c]) || ucd[c]) {
           try {
