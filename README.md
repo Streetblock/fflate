@@ -343,6 +343,10 @@ const unzipper = new fflate.Unzip();
 // If your ZIP files are not compressed, this line is not needed.
 unzipper.register(fflate.UnzipInflate);
 
+// Raw .bz2 files can be decompressed directly too:
+const bz2Data = await fetch('/file.bz2').then(res => res.arrayBuffer());
+const text = fflate.strFromU8(fflate.bunzip2Sync(new Uint8Array(bz2Data)));
+
 const neededFiles = ['file1.txt', 'example.json'];
 
 // Can specify handler in constructor too
