@@ -68,7 +68,7 @@ onmessage = (ev: MessageEvent<[string, string]>) => {
           type: 'uint8array',
           compressionOptions: { level: 6 }
         }).then(buf => {
-          wk.postMessage([buf, true], [buf.buffer]);
+          wk.postMessage([buf, true], [buf.buffer as ArrayBuffer]);
         })
       };
     } else if (type == 'unzip') {
@@ -80,7 +80,7 @@ onmessage = (ev: MessageEvent<[string, string]>) => {
             const file = zip.files[k];
             bufs.push(file.async('uint8array').then(v => {
               out[file.name] = v;
-              return v.buffer;
+              return v.buffer as ArrayBuffer;
             }));
           }
           Promise.all(bufs).then(res => {
@@ -100,12 +100,12 @@ onmessage = (ev: MessageEvent<[string, string]>) => {
       });
       let chk: Uint8Array;
       strm.onData = (chunk: Uint8Array) => {
-        if (chk) wk.postMessage([chk, false], [chk.buffer]);
+        if (chk) wk.postMessage([chk, false], [chk.buffer as ArrayBuffer]);
         chk = chunk;
       };
       onmessage = (ev: MessageEvent<[Uint8Array, boolean]>) => {
         strm.push(ev.data[0], ev.data[1]);
-        if (ev.data[1]) wk.postMessage([chk, true], [chk.buffer]);
+        if (ev.data[1]) wk.postMessage([chk, true], [chk.buffer as ArrayBuffer]);
       };
     }
   } else if (lib == 'uzip') {
@@ -121,13 +121,14 @@ onmessage = (ev: MessageEvent<[string, string]>) => {
       };
     } else if (type == 'unzip') {
       onmessage = (ev: MessageEvent<Uint8Array>) => {
-        const bufs = UZIP.parse(ev.data.buffer);
+        const bufs = UZIP.parse(ev.data.buffer as ArrayBuffer) as Record<string, ArrayBuffer>;
+        const ret: Record<string, Uint8Array<ArrayBuffer>> = {};
         const outBufs: ArrayBuffer[] = [];
         for (const k in bufs) {
           outBufs.push(bufs[k]);
-          bufs[k] = new Uint8Array(bufs[k]);
+          ret[k] = new Uint8Array(bufs[k]);
         }
-        wk.postMessage([bufs, true], outBufs);
+        wk.postMessage([ret, true], outBufs);
       }
     } else {
       const chunks: Uint8Array[] = [];
@@ -147,7 +148,7 @@ onmessage = (ev: MessageEvent<[string, string]>) => {
                     ? uzGzip(out)
                     // we can pray that there's no special header
                     : UZIP.inflateRaw(out.subarray(10, -8));
-          wk.postMessage([buf, true], [buf.buffer]);
+          wk.postMessage([buf, true], [buf.buffer as ArrayBuffer]);
         }
       }
     }

@@ -1,82 +1,107 @@
+[**fflate**](../README.md)
+
+***
+
 # Class: Zlib
 
 Streaming Zlib compression
 
-## Table of contents
-
-### Constructors
-
-- [constructor](Zlib.md#constructor)
-
-### Properties
-
-- [ondata](Zlib.md#ondata)
-
-### Methods
-
-- [flush](Zlib.md#flush)
-- [push](Zlib.md#push)
-
 ## Constructors
 
-### constructor
+### Constructor
 
-• **new Zlib**(`opts`, `cb?`)
-
-Creates a Zlib stream
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `opts` | [`ZlibOptions`](../interfaces/ZlibOptions.md) | The compression options |
-| `cb?` | [`FlateStreamHandler`](../README.md#flatestreamhandler) | The callback to call whenever data is deflated |
-
-• **new Zlib**(`cb?`)
+> **new Zlib**(`opts`: [`ZlibOptions`](../interfaces/ZlibOptions.md), `cb?`: [`FlateStreamHandler`](../type-aliases/FlateStreamHandler.md)): `Zlib`
 
 Creates a Zlib stream
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `cb?` | [`FlateStreamHandler`](../README.md#flatestreamhandler) | The callback to call whenever data is deflated |
+##### opts
+
+[`ZlibOptions`](../interfaces/ZlibOptions.md)
+
+The compression options
+
+##### cb?
+
+[`FlateStreamHandler`](../type-aliases/FlateStreamHandler.md)
+
+The callback to call whenever data is deflated
+
+#### Returns
+
+`Zlib`
+
+### Constructor
+
+> **new Zlib**(`cb?`: [`FlateStreamHandler`](../type-aliases/FlateStreamHandler.md)): `Zlib`
+
+Creates a Zlib stream
+
+#### Parameters
+
+##### cb?
+
+[`FlateStreamHandler`](../type-aliases/FlateStreamHandler.md)
+
+The callback to call whenever data is deflated
+
+#### Returns
+
+`Zlib`
 
 ## Properties
 
 ### ondata
 
-• **ondata**: [`FlateStreamHandler`](../README.md#flatestreamhandler)
+> **ondata**: [`FlateStreamHandler`](../type-aliases/FlateStreamHandler.md)
 
 The handler to call whenever data is available
 
 ## Methods
 
-### flush
+### flush()
 
-▸ **flush**(): `void`
+> **flush**(`sync?`: `boolean`): `void`
 
 Flushes buffered uncompressed data. Useful to immediately retrieve the
 zlibbed output for small inputs.
+
+#### Parameters
+
+##### sync?
+
+`boolean`
+
+Whether to flush to a byte boundary. A sync flush takes 4-5
+            extra bytes, but guarantees all pushed data is immediately
+            decompressible.
 
 #### Returns
 
 `void`
 
-___
+***
 
-### push
+### push()
 
-▸ **push**(`chunk`, `final?`): `void`
+> **push**(`chunk`: `Uint8Array`, `final?`: `boolean`): `void`
 
 Pushes a chunk to be zlibbed
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `chunk` | `Uint8Array` | The chunk to push |
-| `final?` | `boolean` | Whether this is the last chunk |
+##### chunk
+
+`Uint8Array`
+
+The chunk to push
+
+##### final?
+
+`boolean`
+
+Whether this is the last chunk
 
 #### Returns
 
