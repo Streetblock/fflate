@@ -10,7 +10,11 @@ git.log({
   to: 'HEAD'
 }).then(async log => {
   const hash = log.latest!.hash.slice(0, 7);
-  await git.checkout('gh-pages');
+  try {
+    await git.checkout('gh-pages');
+  } catch (e) {
+    return;
+  }
   for (const f of readdirSync(to('.'))) {
     if (statSync(f).isFile())
       unlinkSync(to(f));

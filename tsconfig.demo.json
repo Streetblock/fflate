@@ -3,6 +3,7 @@
     "noEmit": true,
     "target": "ESNext",
     "module": "ESNext",
+    "moduleResolution": "node",
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
     "strict": false

@@ -122,7 +122,7 @@ onmessage = (ev: MessageEvent<[string, string]>) => {
     } else if (type == 'unzip') {
       onmessage = (ev: MessageEvent<Uint8Array>) => {
         const bufs = UZIP.parse(ev.data.buffer as ArrayBuffer) as Record<string, ArrayBuffer>;
-        const ret: Record<string, Uint8Array<ArrayBuffer>> = {};
+        const ret: Record<string, Uint8Array> = {};
         const outBufs: ArrayBuffer[] = [];
         for (const k in bufs) {
           outBufs.push(bufs[k]);

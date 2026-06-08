@@ -93,7 +93,7 @@
     "build:umd": "node scripts/run-script.cjs buildUMD",
     "build:rewrite": "node scripts/run-script.cjs rewriteBuilds",
     "build:demo": "tsc --project tsconfig.demo.json && parcel build demo/index.html --no-cache --public-url \"./\" && node scripts/run-script.cjs cpGHPages",
-    "build:docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --readme none --disableSources --excludePrivate --excludeProtected --expandParameters --githubPages false --out docs/ src/index.ts",
+    "build:docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --readme none --disableSources --excludePrivate --excludeProtected --githubPages false --out docs/ src/index.ts",
     "test": "node scripts/run-tests.cjs",
     "test:zip": "node scripts/run-test-file.cjs test/3-zip.ts",
     "test:bzip2": "node scripts/run-test-file.cjs test/7-bzip2.ts",
