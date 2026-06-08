@@ -1,10 +1,14 @@
 // Mediocre shim
 let Worker: typeof import('worker_threads').Worker;
-let isMarkedAsUntransferable: typeof import('worker_threads').isMarkedAsUntransferable;
+let isMarkedAsUntransferable: ((value: ArrayBuffer) => boolean) | undefined;
 const workerAdd = ";var __w=require('worker_threads');__w.parentPort.on('message',function(m){onmessage({data:m})}),postMessage=function(m,t){__w.parentPort.postMessage(m,t)},close=process.exit;self=global";
 
 try {
-  ({ Worker, isMarkedAsUntransferable } = require('worker_threads'));
+  const workerThreads = require('worker_threads') as {
+    Worker: typeof import('worker_threads').Worker;
+    isMarkedAsUntransferable?: (value: ArrayBuffer) => boolean;
+  };
+  ({ Worker, isMarkedAsUntransferable } = workerThreads);
 } catch(e) {
 }
 export default Worker ? <T>(c: string, _: number, msg: unknown, transfer: ArrayBuffer[], cb: (err: Error, msg: T) => void) => {
@@ -28,5 +32,5 @@ export default Worker ? <T>(c: string, _: number, msg: unknown, transfer: ArrayB
   return {
     terminate: NOP,
     postMessage: NOP
-  } as unknown as import('worker_threads').Worker;
+  } as unknown as typeof import('worker_threads').Worker;
 }

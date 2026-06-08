@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "module": "commonjs",
     "target": "es5",
     "rootDir": "src/",
@@ -9,8 +9,7 @@
     "types": ["node"],
     "strict": false,
     "noImplicitAny": true,
-    "esModuleInterop": false,
-    "ignoreDeprecations": "6.0"
+    "esModuleInterop": false
   },
   "include": ["src/*.ts"]
 }

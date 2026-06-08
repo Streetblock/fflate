@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "declaration": false,
-    "module": "preserve",
+    "module": "esnext",
     "outDir": "esm"
   }
 }

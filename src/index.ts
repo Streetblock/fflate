@@ -823,7 +823,7 @@ export interface InflateOptions<TArrayBuffer extends ArrayBufferLike = ArrayBuff
    * 
    * Note that if the decompression result is larger than the size of this buffer, it will be truncated to fit.
    */
-  out?: Uint8Array<TArrayBuffer>;
+  out?: Uint8Array;
 }
 
 /**
@@ -840,7 +840,7 @@ export interface GunzipOptions<TArrayBuffer extends ArrayBufferLike = ArrayBuffe
    * 
    * Note that if the decompression result is larger than the size of this buffer, it will be truncated to fit.
    */
-  out?: Uint8Array<TArrayBuffer>;
+  out?: Uint8Array;
 }
 
 /**
@@ -922,7 +922,7 @@ export interface ZlibOptions extends DeflateOptions {}
  * @param data The data output from the stream processor
  * @param final Whether this is the final block
  */
-export type FlateStreamHandler = (data: Uint8Array<ArrayBuffer>, final: boolean) => void;
+export type FlateStreamHandler = (data: Uint8Array, final: boolean) => void;
 
 /**
  * Handler for asynchronous data (de)compression streams
@@ -930,7 +930,7 @@ export type FlateStreamHandler = (data: Uint8Array<ArrayBuffer>, final: boolean)
  * @param data The data output from the stream processor
  * @param final Whether this is the final block
  */
-export type AsyncFlateStreamHandler = (err: FlateError | null, data: Uint8Array<ArrayBuffer>, final: boolean) => void;
+export type AsyncFlateStreamHandler = (err: FlateError | null, data: Uint8Array, final: boolean) => void;
 
 /**
  * Handler for the asynchronous completion of (de)compression for a data chunk
@@ -944,7 +944,7 @@ export type AsyncFlateDrainHandler = (size: number) => void;
  * @param err Any error that occurred
  * @param data The resulting data. Only present if `err` is null
  */
-export type FlateCallback = (err: FlateError | null, data: Uint8Array<ArrayBuffer>) => void;
+export type FlateCallback = (err: FlateError | null, data: Uint8Array) => void;
 
 // async callback-based compression
 interface AsyncOptions {
@@ -1095,7 +1095,12 @@ const cbfs = (v: Record<string, unknown>) => {
 }
 
 // use a worker to execute code
-const wrkr = <T, R>(fns: (() => unknown[])[], init: (ev: MessageEvent<T>) => void, id: number, cb: (err: FlateError, msg: R) => void) => {
+type AsyncWorker = {
+  postMessage: (msg: unknown, transfer?: ArrayBuffer[]) => void;
+  terminate: () => void;
+};
+
+const wrkr = <T, R>(fns: (() => unknown[])[], init: (ev: MessageEvent<T>) => void, id: number, cb: (err: FlateError, msg: R) => void): AsyncWorker => {
   if (!ch[id]) {
     let fnStr = '', td: Record<string, unknown> = {}, m = fns.length - 1;
     for (let i = 0; i < m; ++i)
@@ -1103,7 +1108,7 @@ const wrkr = <T, R>(fns: (() => unknown[])[], init: (ev: MessageEvent<T>) => voi
     ch[id] = { c: wcln(fns[m], fnStr, td), e: td };
   }
   const td = mrg({}, ch[id].e);
-  return wk(ch[id].c + ';onmessage=function(e){for(var k in e.data)self[k]=e.data[k];onmessage=' + init.toString() + '}', id, td, cbfs(td), cb);
+  return wk(ch[id].c + ';onmessage=function(e){for(var k in e.data)self[k]=e.data[k];onmessage=' + init.toString() + '}', id, td, cbfs(td), cb) as AsyncWorker;
 }
 
 // base async inflate fn
@@ -1132,7 +1137,8 @@ const gopt = (o?: AsyncInflateOptions) => o && {
 
 // async helper
 const cbify = <T extends AsyncOptions>(dat: Uint8Array, opts: T, fns: (() => unknown[])[], init: (ev: MessageEvent<[Uint8Array, T]>) => void, id: number, cb: FlateCallback) => {
-  const w = wrkr<[Uint8Array, T], Uint8Array<ArrayBuffer>>(
+  let w!: AsyncWorker;
+  w = wrkr<[Uint8Array, T], Uint8Array>(
     fns,
     init,
     id,
@@ -1163,7 +1169,8 @@ type Astrm = { ondata: AsyncFlateStreamHandler; push: (d: Uint8Array, f?: boolea
 // async stream attach
 const astrmify = <T>(fns: (() => unknown[])[], strm: Astrm, opts: T | 0, init: (ev: MessageEvent<T>) => void, id: number, flush: 0 | 1, ext?: (msg: unknown) => unknown) => {
   let t: boolean;
-  const w = wrkr<T, [number] | [Uint8Array, boolean]>(
+  let w!: AsyncWorker;
+  w = wrkr<T, [number] | [Uint8Array, boolean]>(
     fns,
     init,
     id,
@@ -1621,14 +1628,14 @@ export function inflate(data: Uint8Array, opts: AsyncInflateOptions | FlateCallb
  * @param data The data to decompress
  * @returns The decompressed version of the data
  */
-export function inflateSync(data: Uint8Array): Uint8Array<ArrayBuffer>;
+export function inflateSync(data: Uint8Array): Uint8Array;
 /**
  * Expands DEFLATE data with no wrapper
  * @param data The data to decompress
  * @param opts The decompression options
  * @returns The decompressed version of the data
  */
-export function inflateSync<TArrayBuffer extends ArrayBufferLike = ArrayBuffer>(data: Uint8Array, opts?: InflateOptions<TArrayBuffer>): Uint8Array<TArrayBuffer>;
+export function inflateSync<TArrayBuffer extends ArrayBufferLike = ArrayBuffer>(data: Uint8Array, opts?: InflateOptions<TArrayBuffer>): Uint8Array;
 export function inflateSync(data: Uint8Array, opts?: InflateOptions) {
   return inflt(data, { i: 2 }, opts && opts.out, opts && opts.dictionary);
 }
@@ -1963,14 +1970,14 @@ export function gunzip(data: Uint8Array, opts: AsyncGunzipOptions | FlateCallbac
  * @param data The data to decompress
  * @returns The decompressed version of the data
  */
-export function gunzipSync(data: Uint8Array): Uint8Array<ArrayBuffer>;
+export function gunzipSync(data: Uint8Array): Uint8Array;
 /**
  * Expands GZIP data
  * @param data The data to decompress
  * @param opts The decompression options
  * @returns The decompressed version of the data
  */
-export function gunzipSync<TArrayBuffer extends ArrayBufferLike = ArrayBuffer>(data: Uint8Array, opts?: GunzipOptions<TArrayBuffer>): Uint8Array<TArrayBuffer>;
+export function gunzipSync<TArrayBuffer extends ArrayBufferLike = ArrayBuffer>(data: Uint8Array, opts?: GunzipOptions<TArrayBuffer>): Uint8Array;
 export function gunzipSync(data: Uint8Array, opts?: GunzipOptions) {
   const st = gzs(data);
   if (st + 8 > data.length) err(6, 'invalid gzip data');
@@ -2272,14 +2279,14 @@ export function unzlib(data: Uint8Array, opts: AsyncUnzlibOptions | FlateCallbac
  * @param data The data to decompress
  * @returns The decompressed version of the data
  */
-export function unzlibSync(data: Uint8Array): Uint8Array<ArrayBuffer>;
+export function unzlibSync(data: Uint8Array): Uint8Array;
 /**
  * Expands Zlib data
  * @param data The data to decompress
  * @param opts The decompression options
  * @returns The decompressed version of the data
  */
-export function unzlibSync<TArrayBuffer extends ArrayBufferLike = ArrayBuffer>(data: Uint8Array, opts?: UnzlibOptions<TArrayBuffer>): Uint8Array<TArrayBuffer>;
+export function unzlibSync<TArrayBuffer extends ArrayBufferLike = ArrayBuffer>(data: Uint8Array, opts?: UnzlibOptions<TArrayBuffer>): Uint8Array;
 export function unzlibSync(data: Uint8Array, opts?: UnzlibOptions) {
   return inflt(data.subarray(zls(data, opts && opts.dictionary), -4), { i: 2 }, opts && opts.out, opts && opts.dictionary);
 }
@@ -2695,7 +2702,7 @@ export interface AsyncZippable {
  * and the file is the value
  */
 export interface Unzipped {
-  [path: string]: Uint8Array<ArrayBuffer>;
+  [path: string]: Uint8Array;
 }
 
 /**
@@ -3116,7 +3123,7 @@ export class ZipPassThrough implements ZipInputFile {
    * @param chunk The chunk to process
    * @param final Whether this is the last chunk
    */
-  protected process(chunk: Uint8Array<ArrayBuffer>, final: boolean) {
+  protected process(chunk: Uint8Array, final: boolean) {
     this.ondata(null, chunk, final);
   }
 
@@ -3134,7 +3141,7 @@ export class ZipPassThrough implements ZipInputFile {
     if (final) this.crc = this.c.d();
     // we shouldn't really do this cast, but properly handling ArrayBufferLike
     // makes the API unergonomic with Buffer
-    this.process(chunk as Uint8Array<ArrayBuffer>, final || false);
+    this.process(chunk as Uint8Array, final || false);
   }
 }
 
@@ -3295,7 +3302,7 @@ export class Zip {
       if (fl > 65535) this.ondata(err(11, 0, 1), null, false);
       const header = new u8(hl);
       wzh(header, 0, file, f, u, -1);
-      let chks: Uint8Array<ArrayBuffer>[] = [header];
+      let chks: Uint8Array[] = [header];
       const pAll = () => {
         for (const chk of chks) this.ondata(null, chk, false);
         chks = [];
@@ -3671,7 +3678,7 @@ export class UnzipPassThrough implements UnzipDecoder {
   ondata: AsyncFlateStreamHandler;
   push(chunk: Uint8Array, final: boolean) {
     // same as ZipPassThrough: cast to retain Buffer ergonomics
-    this.ondata(null, chunk as Uint8Array<ArrayBuffer>, final);
+    this.ondata(null, chunk as Uint8Array, final);
   }
 }
 
