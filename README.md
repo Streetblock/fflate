@@ -343,10 +343,6 @@ const unzipper = new fflate.Unzip();
 // If your ZIP files are not compressed, this line is not needed.
 unzipper.register(fflate.UnzipInflate);
 
-// Raw .bz2 files can be decompressed directly too:
-const bz2Data = await fetch('/file.bz2').then(res => res.arrayBuffer());
-const text = fflate.strFromU8(fflate.bunzip2Sync(new Uint8Array(bz2Data)));
-
 const neededFiles = ['file1.txt', 'example.json'];
 
 // Can specify handler in constructor too
@@ -503,6 +499,25 @@ unzip.push(data, true);
 ```
 
 See the [documentation](https://github.com/101arrowz/fflate/blob/master/docs/README.md) for more detailed information about the API.
+
+## Raw BZIP2 (.bz2)
+
+`fflate` can also decompress raw `.bz2` files directly, outside of ZIP archives.
+
+```js
+const bz2Data = await fetch('/file.bz2').then(res => res.arrayBuffer());
+const textData = fflate.bunzip2Sync(new Uint8Array(bz2Data));
+const text = fflate.strFromU8(textData);
+```
+
+If you prefer the asynchronous API:
+
+```js
+fflate.bunzip2(new Uint8Array(bz2Data), (err, data) => {
+  if (err) throw err;
+  console.log(fflate.strFromU8(data));
+});
+```
 
 ## Bundle size estimates
 
