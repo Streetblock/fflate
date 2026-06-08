@@ -1,110 +1,132 @@
+[**fflate**](../README.md)
+
+***
+
 # Class: AsyncZlib
 
 Asynchronous streaming Zlib compression
 
-## Table of contents
-
-### Constructors
-
-- [constructor](AsyncZlib.md#constructor)
-
-### Properties
-
-- [ondata](AsyncZlib.md#ondata)
-- [ondrain](AsyncZlib.md#ondrain)
-- [queuedSize](AsyncZlib.md#queuedsize)
-- [terminate](AsyncZlib.md#terminate)
-
-### Methods
-
-- [flush](AsyncZlib.md#flush)
-- [push](AsyncZlib.md#push)
-
 ## Constructors
 
-### constructor
+### Constructor
 
-• **new AsyncZlib**(`opts`, `cb?`)
-
-Creates an asynchronous Zlib stream
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `opts` | [`ZlibOptions`](../interfaces/ZlibOptions.md) | The compression options |
-| `cb?` | [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler) | The callback to call whenever data is deflated |
-
-• **new AsyncZlib**(`cb?`)
+> **new AsyncZlib**(`opts`: [`ZlibOptions`](../interfaces/ZlibOptions.md), `cb?`: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)): `AsyncZlib`
 
 Creates an asynchronous Zlib stream
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `cb?` | [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler) | The callback to call whenever data is deflated |
+##### opts
+
+[`ZlibOptions`](../interfaces/ZlibOptions.md)
+
+The compression options
+
+##### cb?
+
+[`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
+
+The callback to call whenever data is deflated
+
+#### Returns
+
+`AsyncZlib`
+
+### Constructor
+
+> **new AsyncZlib**(`cb?`: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)): `AsyncZlib`
+
+Creates an asynchronous Zlib stream
+
+#### Parameters
+
+##### cb?
+
+[`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
+
+The callback to call whenever data is deflated
+
+#### Returns
+
+`AsyncZlib`
 
 ## Properties
 
 ### ondata
 
-• **ondata**: [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler)
+> **ondata**: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
 
 The handler to call whenever data is available
 
-___
+***
 
-### ondrain
+### ondrain?
 
-• `Optional` **ondrain**: [`AsyncFlateDrainHandler`](../README.md#asyncflatedrainhandler)
+> `optional` **ondrain?**: [`AsyncFlateDrainHandler`](../type-aliases/AsyncFlateDrainHandler.md)
 
 The handler to call whenever buffered source data is processed (i.e. `queuedSize` updates)
 
-___
+***
 
 ### queuedSize
 
-• **queuedSize**: `number`
+> **queuedSize**: `number`
 
 The number of uncompressed bytes buffered in the stream
 
-___
+***
 
 ### terminate
 
-• **terminate**: [`AsyncTerminable`](../interfaces/AsyncTerminable.md)
+> **terminate**: [`AsyncTerminable`](../interfaces/AsyncTerminable.md)
 
 A method to terminate the stream's internal worker. Subsequent calls to
 push() will silently fail.
 
 ## Methods
 
-### flush
+### flush()
 
-▸ **flush**(): `void`
+> **flush**(`sync?`: `boolean`): `void`
 
 Flushes buffered uncompressed data. Useful to immediately retrieve the
 zlibbed output for small inputs.
+
+#### Parameters
+
+##### sync?
+
+`boolean`
+
+Whether to flush to a byte boundary. A sync flush takes 4-5
+            extra bytes, but guarantees all pushed data is immediately
+            decompressible.
 
 #### Returns
 
 `void`
 
-___
+***
 
-### push
+### push()
 
-▸ **push**(`chunk`, `final?`): `void`
+> **push**(`chunk`: `Uint8Array`, `final?`: `boolean`): `void`
 
 Pushes a chunk to be deflated
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `chunk` | `Uint8Array` | The chunk to push |
-| `final?` | `boolean` | Whether this is the last chunk |
+##### chunk
+
+`Uint8Array`
+
+The chunk to push
+
+##### final?
+
+`boolean`
+
+Whether this is the last chunk
 
 #### Returns
 

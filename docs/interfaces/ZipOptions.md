@@ -1,33 +1,20 @@
+[**fflate**](../README.md)
+
+***
+
 # Interface: ZipOptions
 
 Options for creating a ZIP archive
 
-## Hierarchy
+## Extends
 
-- [`DeflateOptions`](DeflateOptions.md)
-
-- [`ZipAttributes`](ZipAttributes.md)
-
-  ↳ **`ZipOptions`**
-
-## Table of contents
-
-### Properties
-
-- [attrs](ZipOptions.md#attrs)
-- [comment](ZipOptions.md#comment)
-- [dictionary](ZipOptions.md#dictionary)
-- [extra](ZipOptions.md#extra)
-- [level](ZipOptions.md#level)
-- [mem](ZipOptions.md#mem)
-- [mtime](ZipOptions.md#mtime)
-- [os](ZipOptions.md#os)
+- [`DeflateOptions`](DeflateOptions.md).[`ZipAttributes`](ZipAttributes.md)
 
 ## Properties
 
-### attrs
+### attrs?
 
-• `Optional` **attrs**: `number`
+> `optional` **attrs?**: `number`
 
 The file's attributes. These are traditionally somewhat complicated
 and platform-dependent, so using them is scarcely necessary. However,
@@ -51,13 +38,13 @@ Note that attributes usually only work in conjunction with the `os` setting: you
 
 #### Inherited from
 
-[ZipAttributes](ZipAttributes.md).[attrs](ZipAttributes.md#attrs)
+[`ZipAttributes`](ZipAttributes.md).[`attrs`](ZipAttributes.md#attrs)
 
-___
+***
 
-### comment
+### comment?
 
-• `Optional` **comment**: `string`
+> `optional` **comment?**: `string`
 
 The comment to attach to the file. This field is defined by PKZIP's APPNOTE.txt,
 section 4.4.26. The comment must be at most 65,535 bytes long UTF-8 encoded. This
@@ -65,13 +52,13 @@ field is not read by consumer software.
 
 #### Inherited from
 
-[ZipAttributes](ZipAttributes.md).[comment](ZipAttributes.md#comment)
+[`ZipAttributes`](ZipAttributes.md).[`comment`](ZipAttributes.md#comment)
 
-___
+***
 
-### dictionary
+### dictionary?
 
-• `Optional` **dictionary**: `Uint8Array`
+> `optional` **dictionary?**: `Uint8Array`
 
 A buffer containing common byte sequences in the input data that can be used to significantly improve compression ratios.
 
@@ -84,13 +71,13 @@ Avoid using dictionaries with GZIP and ZIP to maximize software compatibility.
 
 #### Inherited from
 
-[DeflateOptions](DeflateOptions.md).[dictionary](DeflateOptions.md#dictionary)
+[`DeflateOptions`](DeflateOptions.md).[`dictionary`](DeflateOptions.md#dictionary)
 
-___
+***
 
-### extra
+### extra?
 
-• `Optional` **extra**: `Record`<`number`, `Uint8Array`\>
+> `optional` **extra?**: `Record`\<`number`, `Uint8Array`\>
 
 Extra metadata to add to the file. This field is defined by PKZIP's APPNOTE.txt,
 section 4.4.28. At most 65,535 bytes may be used in each ID. The ID must be an
@@ -101,13 +88,13 @@ proprietary standards and software.
 
 #### Inherited from
 
-[ZipAttributes](ZipAttributes.md).[extra](ZipAttributes.md#extra)
+[`ZipAttributes`](ZipAttributes.md).[`extra`](ZipAttributes.md#extra)
 
-___
+***
 
-### level
+### level?
 
-• `Optional` **level**: ``0`` \| ``2`` \| ``1`` \| ``3`` \| ``4`` \| ``8`` \| ``5`` \| ``6`` \| ``7`` \| ``9``
+> `optional` **level?**: `0` \| `1` \| `2` \| `3` \| `4` \| `5` \| `6` \| `7` \| `8` \| `9`
 
 The level of compression to use, ranging from 0-9.
 
@@ -125,17 +112,17 @@ For example, a 1 MB text file could:
 
 #### Inherited from
 
-[DeflateOptions](DeflateOptions.md).[level](DeflateOptions.md#level)
+[`DeflateOptions`](DeflateOptions.md).[`level`](DeflateOptions.md#level)
 
-___
+***
 
-### mem
+### mem?
 
-• `Optional` **mem**: ``0`` \| ``2`` \| ``1`` \| ``3`` \| ``4`` \| ``8`` \| ``5`` \| ``6`` \| ``10`` \| ``7`` \| ``12`` \| ``9`` \| ``11``
+> `optional` **mem?**: `0` \| `1` \| `2` \| `3` \| `4` \| `5` \| `6` \| `7` \| `8` \| `9` \| `10` \| `11` \| `12`
 
 The memory level to use, ranging from 0-12. Increasing this increases speed and compression ratio at the cost of memory.
 
-Note that this is exponential: while level 0 uses 4 kB, level 4 uses 64 kB, level 8 uses 1 MB, and level 12 uses 16 MB.
+Note that this is exponential: while level 0 uses 8 kB, level 4 uses 128 kB, level 8 uses 2 MB, and level 12 uses 32 MB.
 It is recommended not to lower the value below 4, since that tends to hurt performance.
 In addition, values above 8 tend to help very little on most data and can even hurt performance.
 
@@ -143,25 +130,25 @@ The default value is automatically determined based on the size of the input dat
 
 #### Inherited from
 
-[DeflateOptions](DeflateOptions.md).[mem](DeflateOptions.md#mem)
+[`DeflateOptions`](DeflateOptions.md).[`mem`](DeflateOptions.md#mem)
 
-___
+***
 
-### mtime
+### mtime?
 
-• `Optional` **mtime**: `string` \| `number` \| `Date`
+> `optional` **mtime?**: `string` \| `number` \| `Date`
 
 When the file was last modified. Defaults to the current time.
 
 #### Inherited from
 
-[ZipAttributes](ZipAttributes.md).[mtime](ZipAttributes.md#mtime)
+[`ZipAttributes`](ZipAttributes.md).[`mtime`](ZipAttributes.md#mtime)
 
-___
+***
 
-### os
+### os?
 
-• `Optional` **os**: `number`
+> `optional` **os?**: `number`
 
 The operating system of origin for this file. The value is defined
 by PKZIP's APPNOTE.txt, section 4.4.2.2. For example, 0 (the default)
@@ -169,4 +156,4 @@ is MS/DOS, 3 is Unix, 19 is macOS.
 
 #### Inherited from
 
-[ZipAttributes](ZipAttributes.md).[os](ZipAttributes.md#os)
+[`ZipAttributes`](ZipAttributes.md).[`os`](ZipAttributes.md#os)

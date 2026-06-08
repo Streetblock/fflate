@@ -1,56 +1,49 @@
+[**fflate**](../README.md)
+
+***
+
 # Interface: FlateError
 
 An error generated within this library
 
-## Hierarchy
+## Extends
 
 - `Error`
-
-  ↳ **`FlateError`**
-
-## Table of contents
-
-### Properties
-
-- [code](FlateError.md#code)
-- [message](FlateError.md#message)
-- [name](FlateError.md#name)
-- [stack](FlateError.md#stack)
 
 ## Properties
 
 ### code
 
-• **code**: `number`
+> **code**: `number`
 
 The code associated with this error
 
-___
+***
 
 ### message
 
-• **message**: `string`
+> **message**: `string`
 
 #### Inherited from
 
-Error.message
+`Error.message`
 
-___
+***
 
 ### name
 
-• **name**: `string`
+> **name**: `string`
 
 #### Inherited from
 
-Error.name
+`Error.name`
 
-___
+***
 
-### stack
+### stack?
 
-• `Optional` **stack**: `string`
+> `optional` **stack?**: `string`
 
 #### Inherited from
 
-Error.stack
+`Error.stack`

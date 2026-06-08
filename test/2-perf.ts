@@ -19,23 +19,23 @@ const cache: Record<string, Record<string, Buffer>> = {
 
 const flattenedWorkers: Record<string, TestHandler> = {};
 for (const k in workers) {
-  for (const l in workers[k]) {
+  for (const l in workers[k as keyof typeof workers]) {
     if (l == 'zip' || l == 'unzip') continue;
     flattenedWorkers[k + '.' + l] = async (file, name, resetTimer) => {
       const fileClone = bClone(file);
       let buf = fileClone;
-      if (preprocessors[l]) {
+      if (preprocessors[l as keyof typeof preprocessors]) {
         buf = bClone(cache[l][name] ||= Buffer.from(
           await preprocessors[l as keyof typeof preprocessors](buf, [buf.buffer])
         ));
         resetTimer();
       }
-      const opt2 = preprocessors[l]
+      const opt2 = preprocessors[l as keyof typeof preprocessors]
         ? k === 'tinyInflate'
           ? new Uint8Array(file.length)
           : null
         : { level: 1 };
-      await workers[k][l]([buf, opt2], opt2 instanceof Uint8Array
+      await workers[k as keyof typeof workers][l as 'inflate']([buf, opt2], opt2 instanceof Uint8Array
         ? [buf.buffer, opt2.buffer]
         : [buf.buffer]);
     }
