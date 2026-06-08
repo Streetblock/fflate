@@ -1,105 +1,117 @@
+[**fflate**](../README.md)
+
+***
+
 # Class: AsyncGunzip
 
 Asynchronous streaming single or multi-member GZIP decompression
 
-## Table of contents
-
-### Constructors
-
-- [constructor](AsyncGunzip.md#constructor)
-
-### Properties
-
-- [ondata](AsyncGunzip.md#ondata)
-- [ondrain](AsyncGunzip.md#ondrain)
-- [onmember](AsyncGunzip.md#onmember)
-- [queuedSize](AsyncGunzip.md#queuedsize)
-- [terminate](AsyncGunzip.md#terminate)
-
-### Methods
-
-- [push](AsyncGunzip.md#push)
-
 ## Constructors
 
-### constructor
+### Constructor
 
-• **new AsyncGunzip**(`opts`, `cb?`)
-
-Creates an asynchronous GUNZIP stream
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `opts` | [`GunzipStreamOptions`](../interfaces/GunzipStreamOptions.md) | The decompression options |
-| `cb?` | [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler) | The callback to call whenever data is inflated |
-
-• **new AsyncGunzip**(`cb?`)
+> **new AsyncGunzip**(`opts`: [`GunzipStreamOptions`](../interfaces/GunzipStreamOptions.md), `cb?`: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)): `AsyncGunzip`
 
 Creates an asynchronous GUNZIP stream
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `cb?` | [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler) | The callback to call whenever data is inflated |
+##### opts
+
+[`GunzipStreamOptions`](../interfaces/GunzipStreamOptions.md)
+
+The decompression options
+
+##### cb?
+
+[`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
+
+The callback to call whenever data is inflated
+
+#### Returns
+
+`AsyncGunzip`
+
+### Constructor
+
+> **new AsyncGunzip**(`cb?`: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)): `AsyncGunzip`
+
+Creates an asynchronous GUNZIP stream
+
+#### Parameters
+
+##### cb?
+
+[`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
+
+The callback to call whenever data is inflated
+
+#### Returns
+
+`AsyncGunzip`
 
 ## Properties
 
 ### ondata
 
-• **ondata**: [`AsyncFlateStreamHandler`](../README.md#asyncflatestreamhandler)
+> **ondata**: [`AsyncFlateStreamHandler`](../type-aliases/AsyncFlateStreamHandler.md)
 
 The handler to call whenever data is available
 
-___
+***
 
-### ondrain
+### ondrain?
 
-• `Optional` **ondrain**: [`AsyncFlateDrainHandler`](../README.md#asyncflatedrainhandler)
+> `optional` **ondrain?**: [`AsyncFlateDrainHandler`](../type-aliases/AsyncFlateDrainHandler.md)
 
 The handler to call whenever buffered source data is processed (i.e. `queuedSize` updates)
 
-___
+***
 
-### onmember
+### onmember?
 
-• `Optional` **onmember**: [`GunzipMemberHandler`](../README.md#gunzipmemberhandler)
+> `optional` **onmember?**: [`GunzipMemberHandler`](../type-aliases/GunzipMemberHandler.md)
 
 The handler to call whenever a new GZIP member is found
 
-___
+***
 
 ### queuedSize
 
-• **queuedSize**: `number`
+> **queuedSize**: `number`
 
 The number of compressed bytes buffered in the stream
 
-___
+***
 
 ### terminate
 
-• **terminate**: [`AsyncTerminable`](../interfaces/AsyncTerminable.md)
+> **terminate**: [`AsyncTerminable`](../interfaces/AsyncTerminable.md)
 
 A method to terminate the stream's internal worker. Subsequent calls to
 push() will silently fail.
 
 ## Methods
 
-### push
+### push()
 
-▸ **push**(`chunk`, `final?`): `void`
+> **push**(`chunk`: `Uint8Array`, `final?`: `boolean`): `void`
 
 Pushes a chunk to be GUNZIPped
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `chunk` | `Uint8Array` | The chunk to push |
-| `final?` | `boolean` | Whether this is the last chunk |
+##### chunk
+
+`Uint8Array`
+
+The chunk to push
+
+##### final?
+
+`boolean`
+
+Whether this is the last chunk
 
 #### Returns
 

@@ -1,40 +1,33 @@
+[**fflate**](../README.md)
+
+***
+
 # Interface: AsyncGunzipOptions
 
 Options for decompressing GZIP data asynchronously
 
-## Hierarchy
+## Extends
 
-- `AsyncOptions`
-
-- [`InflateStreamOptions`](InflateStreamOptions.md)
-
-  ↳ **`AsyncGunzipOptions`**
-
-## Table of contents
-
-### Properties
-
-- [consume](AsyncGunzipOptions.md#consume)
-- [dictionary](AsyncGunzipOptions.md#dictionary)
+- `AsyncOptions`.[`InflateStreamOptions`](InflateStreamOptions.md)
 
 ## Properties
 
-### consume
+### consume?
 
-• `Optional` **consume**: `boolean`
+> `optional` **consume?**: `boolean`
 
 Whether or not to "consume" the source data. This will make the typed array/buffer you pass in
 unusable but will increase performance and reduce memory usage.
 
 #### Inherited from
 
-AsyncOptions.consume
+`AsyncOptions.consume`
 
-___
+***
 
-### dictionary
+### dictionary?
 
-• `Optional` **dictionary**: `Uint8Array`
+> `optional` **dictionary?**: `Uint8Array`
 
 The dictionary used to compress the original data. If no dictionary was used during compression, this option has no effect.
 
@@ -42,4 +35,4 @@ Supplying the wrong dictionary during decompression usually yields corrupt outpu
 
 #### Inherited from
 
-[InflateStreamOptions](InflateStreamOptions.md).[dictionary](InflateStreamOptions.md#dictionary)
+[`InflateStreamOptions`](InflateStreamOptions.md).[`dictionary`](InflateStreamOptions.md#dictionary)
